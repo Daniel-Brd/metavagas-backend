@@ -6,10 +6,11 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { TechnologiesModule } from './technologies/technologies.module';
 import { VacanciesModule } from './vacancies/vacancies.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, CompaniesModule, VacanciesModule, TechnologiesModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, CompaniesModule, VacanciesModule, TechnologiesModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
