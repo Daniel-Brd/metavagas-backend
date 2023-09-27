@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { CompaniesModule } from './companies/companies.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { VacanciesModule } from './vacancies/vacancies.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, CompaniesModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, CompaniesModule, VacanciesModule],
   controllers: [AppController],
   providers: [AppService],
 })
