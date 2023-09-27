@@ -12,7 +12,7 @@ export class Company {
   city: string;
 
   @Column({ type: 'varchar', length: 128, nullable: false })
-  state: string;
+  state: string; 
 
   @Column({ type: 'varchar', length: 128, nullable: false })
   address: string;
