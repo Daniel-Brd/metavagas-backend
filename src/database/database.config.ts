@@ -5,6 +5,7 @@ import {
 } from '@nestjs/typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { Vacancy } from './entities/vacancies.entity';
+import { Company } from './entities/company.entity';
 
 export default <TypeOrmModuleAsyncOptions>{
   imports: [ConfigModule],
@@ -21,7 +22,7 @@ export default <TypeOrmModuleAsyncOptions>{
       password: configService.get('DB_PASSWORD'),
       database: configService.get('DB_DATABASE'),
       extra: { ssl: true },
-      entities: [Vacancy],
+      entities: [Company, Vacancy],
       synchronize: true,
     };
   },
