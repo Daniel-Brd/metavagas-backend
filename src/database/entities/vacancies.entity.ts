@@ -2,11 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Company } from './company.entity';
+import { User } from './user.entity';
+import { Technology } from './technology.entity';
 
 @Entity()
 export class Vacancy {
@@ -34,12 +38,16 @@ export class Vacancy {
   @ManyToOne(() => Company)
   companyId: Company;
 
-  @Column({ type: 'int', nullable: false })
-  advertiserId: number;
+  @ManyToOne(() => User)
+  advertiserId: User;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updateAt: Date;
+
+  @ManyToMany(() => Technology, (technology) => technology.vacancies)
+  @JoinTable({ name: 'vacancy_technology' })
+  technologies: Technology[]
 }

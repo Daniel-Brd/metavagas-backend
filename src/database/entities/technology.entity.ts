@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Vacancy } from './vacancies.entity';
 
 @Entity()
 export class Technology {
@@ -10,4 +11,7 @@ export class Technology {
 
   @Column({ type: 'varchar', length: 64, nullable: false })
   creatorsName: string;
+
+  @ManyToMany(() => Vacancy, (vacancy) => vacancy.technologies)
+  vacancies: Vacancy[]
 }
