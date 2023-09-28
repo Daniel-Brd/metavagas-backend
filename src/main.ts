@@ -10,6 +10,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   
-  await app.listen(+configService.get('DB_PORT'));
+  await app.listen(+configService.get('APP_PORT'));
 }
 bootstrap();
