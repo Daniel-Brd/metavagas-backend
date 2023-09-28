@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
@@ -7,6 +8,8 @@ async function bootstrap() {
 
   const configService = app.get<ConfigService>(ConfigService)
 
+  app.useGlobalPipes(new ValidationPipe());
+  
   await app.listen(+configService.get('DB_PORT'));
 }
 bootstrap();
