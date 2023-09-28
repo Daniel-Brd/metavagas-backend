@@ -4,6 +4,11 @@ import { RoleEnum } from "../../enums/role.enum";
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
+  @MaxLength(64)
+  name: string;
+
+  @IsNotEmpty()
+  @IsString()
   @IsEmail()
   @MaxLength(100)
   email: string;
