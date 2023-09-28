@@ -15,7 +15,7 @@ import { Technology } from './technology.entity';
 @Entity()
 export class Vacancy {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', length: 80, nullable: false })
   vacancyRole: string;
