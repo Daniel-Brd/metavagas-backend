@@ -23,5 +23,5 @@ export class CreateCompanyDto {
 
   @IsNotEmpty()
   @IsString()
-  description: string;
+  description:string;
 }
