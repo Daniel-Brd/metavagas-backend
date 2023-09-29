@@ -1,4 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Company } from 'src/database/entities/company.entity';
+import { User } from 'src/database/entities/user.entity';
 
 export class CreateVacancyDto {
   @IsNotEmpty()
@@ -27,9 +29,9 @@ export class CreateVacancyDto {
 
   @IsNotEmpty()
   @IsNumber()
-  companyId: number;
+  companyId: Company;
 
   @IsNotEmpty()
   @IsNumber()
-  advertiserId: number;
+  advertiserId: User;
 }
