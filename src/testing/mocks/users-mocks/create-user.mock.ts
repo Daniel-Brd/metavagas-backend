@@ -1,7 +1,7 @@
-import { CreateUserDto } from "../../users/dto/create-user.dto";
+import { CreateUserDto } from "../../../users/dto/create-user.dto";
 
 export const createUserMock: CreateUserDto = {
-  name: 'test',
+  name: 'name1 test',
   email: 'test@gmail.com',
   password: 'abc123*',
 };

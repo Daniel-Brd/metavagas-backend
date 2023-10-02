@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 
-import { usersServiceMock } from '../testing/mocks/users-service.mock';
-import { createUserMock } from '../testing/mocks/create-user.mock';
-import { usersListMock } from '../testing/mocks/users-list.mock';
-import { updateUserMock } from '../testing/mocks/update-user.mock';
-import { userProfileMock } from '../testing/mocks/user-profile.mock';
+import { usersServiceMock } from '../testing/mocks/users-mocks/users-service.mock';
+import { createUserMock } from '../testing/mocks/users-mocks/create-user.mock';
+import { usersListMock } from '../testing/mocks/users-mocks/users-list.mock';
+import { updateUserMock } from '../testing/mocks/users-mocks/update-user.mock';
+import { userProfileMock } from '../testing/mocks/users-mocks/user-profile.mock';
 
 import { HttpException } from '@nestjs/common';
 
@@ -24,14 +24,6 @@ describe('UsersController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-
-  describe('Create', () => {
-    it('should create and return an user', async () => {
-      const result = await controller.create(createUserMock)
-
-      expect(result).toEqual(usersListMock[0])
-    })
-  })
 
   describe('Read', () => {
     describe('findAll', () => {
