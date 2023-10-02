@@ -1,5 +1,5 @@
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { User } from "../../database/entities/user.entity";
+import { User } from "../../../database/entities/user.entity";
 import { usersListMock } from "./users-list.mock";
 import { updateUserMock } from "./update-user.mock";
 import { userProfileMock } from "./user-profile.mock";
