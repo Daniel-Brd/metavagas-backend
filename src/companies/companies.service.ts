@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Company } from 'src/database/entities/company.entity';
+import { Company } from '../database/entities/company.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -59,7 +59,5 @@ export class CompaniesService {
     const savedCompany = await this.companyRepository.save(updatedCompany);
 
     return savedCompany;
-
-}
-
+  }
 }
