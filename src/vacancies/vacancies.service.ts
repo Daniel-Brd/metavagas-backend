@@ -14,7 +14,7 @@ export class VacanciesService {
     private VacanciesRepository: Repository<Vacancy>,
     @InjectRepository(Company)
     private companyRepository: Repository<Company>,
-  ) {}
+  ) { }
 
   async create(createVacancyDto: CreateVacancyDto, currentUser: any) {
     try {
@@ -24,17 +24,18 @@ export class VacanciesService {
       })
 
       if (!company) {
-        throw new NotFoundException('Company not found');
+        throw new HttpException('Company not found.', 404);
       }
       const tempVacancies = this.VacanciesRepository.create({
         ...createVacancyDto,
-        companyName: company.name,
-      advertiserId: currentUser.userId});
+        companyId: company.id,
+        advertiserId: currentUser.userId
+      });
       const vacancies = await this.VacanciesRepository.save(tempVacancies);
       return vacancies;
-    } catch (error: any) {
+    } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
+        error.message || 'Internal server error.',
         error.statusCode || 500,
       );
     }
@@ -42,11 +43,11 @@ export class VacanciesService {
 
   async findAll() {
     try {
-      const vacanciesList = await this.VacanciesRepository.find();
+      const vacanciesList = await this.VacanciesRepository.find({ relations: ['company'] });
       return vacanciesList;
     } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
+        error.message || 'Internal server error.',
         error.status || 500,
       );
     }
@@ -57,7 +58,8 @@ export class VacanciesService {
       const vacancy = await this.VacanciesRepository.findOneBy({ id });
       return vacancy;
     } catch (error) {
-      throw new NotFoundException();
+      throw new HttpException('Vacancy not found.', 404);
+
     }
   }
 
@@ -78,7 +80,7 @@ export class VacanciesService {
       return await this.findById(id);
     } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
+        error.message || 'Internal server error.',
         error.status || 500,
       );
     }
@@ -97,7 +99,5 @@ export class VacanciesService {
       throw new HttpException(
         error.message || 'Internal server error',
         error.status || 500,
-      );
-    }
-  }
-}
+    );
+}}}
