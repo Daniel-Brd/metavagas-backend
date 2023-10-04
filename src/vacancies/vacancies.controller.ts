@@ -2,15 +2,22 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { VacanciesService } from './vacancies.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
+import { CurrentUser } from '../decorators/user.decorator';
+import { Auth } from '../decorators/auth.decorator';
+import { UsersService } from 'src/users/users.service';
+import { RoleEnum } from '../enums/role.enum';
 
 @Controller('vacancies')
 export class VacanciesController {
-  constructor(private readonly vacanciesService: VacanciesService) {}
+  constructor(
+    private readonly vacanciesService: VacanciesService,
+    private readonly usersService: UsersService
+  ) {}
 
-
+  @Auth([RoleEnum.admin])
   @Post()
-  create(@Body() createVacancyDto: CreateVacancyDto) {
-    return this.vacanciesService.create(createVacancyDto);
+  create(@Body() createVacancyDto: CreateVacancyDto, @CurrentUser() currentUser: any) {
+    return this.vacanciesService.create(createVacancyDto, currentUser);
   }
 
   @Get()
@@ -21,6 +28,11 @@ export class VacanciesController {
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.vacanciesService.findById(id);
+  }
+
+  @Auth()
+  findProfile(@CurrentUser() CurrentUser: any) {
+    return this.usersService.findProfile(CurrentUser.userId)
   }
 
   @Patch(':id')

@@ -1,20 +1,35 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
-import { Vacancy } from 'src/database/entities/vacancies.entity';
+import { Vacancy } from '../database/entities/vacancies.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Company } from '../database/entities/company.entity';
+
 
 @Injectable()
 export class VacanciesService {
   constructor(
     @InjectRepository(Vacancy)
     private VacanciesRepository: Repository<Vacancy>,
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
   ) {}
 
-  async create(createVacancyDto: CreateVacancyDto) {
+  async create(createVacancyDto: CreateVacancyDto, currentUser: any) {
     try {
-      const tempVacancies = this.VacanciesRepository.create(createVacancyDto);
+
+      const company = await this.companyRepository.findOne({
+        where: { name: createVacancyDto.companyName }
+      })
+
+      if (!company) {
+        throw new NotFoundException('Company not found');
+      }
+      const tempVacancies = this.VacanciesRepository.create({
+        ...createVacancyDto,
+        companyName: company.name,
+      advertiserId: currentUser.userId});
       const vacancies = await this.VacanciesRepository.save(tempVacancies);
       return vacancies;
     } catch (error: any) {
