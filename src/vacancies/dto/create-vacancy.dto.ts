@@ -28,10 +28,7 @@ export class CreateVacancyDto {
   level: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  companyId: Company;
+  companyName: string;
 
-  @IsNotEmpty()
-  @IsNumber()
   advertiserId: User;
 }
