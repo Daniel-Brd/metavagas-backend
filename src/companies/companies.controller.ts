@@ -24,21 +24,12 @@ export class CompaniesController {
   @Get(':id')
   @ApiOperation({ summary: 'Search for a company by ID' })
   findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
+    return this.companiesService.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a company by ID' })
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    return this.companiesService.update(+id, updateCompanyDto);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Deletes a company by ID' })
-  remove(@Param('id') id: string) {
-    return this.companiesService.remove(+id);
+    return this.companiesService.update(id, updateCompanyDto);
   }
 }
-
-
-

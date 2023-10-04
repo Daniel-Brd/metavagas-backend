@@ -49,6 +49,20 @@ export class UsersService {
     }
   }
 
+  async findByEmail(email: string) {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { email },
+        select: ['id', 'name', 'email', 'password', 'isActive', 'role']
+      });
+
+      return user
+    } catch (error) {
+      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+    }
+  }
+
+
   async findProfile(id: string) {
     try {
       const profile = await this.usersRepository.findOne({

@@ -42,5 +42,5 @@ export class CreateCompanyDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  description: string;
+  description:string;
 }

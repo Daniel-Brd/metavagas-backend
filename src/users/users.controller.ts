@@ -1,10 +1,10 @@
-import {
-  Controller, Get,Post,Body,Patch,Param,Delete,ParseUUIDPipe} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, ParseUUIDPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {ApiBearerAuth,ApiOperation,ApiResponse,ApiTags,} from '@nestjs/swagger';
-
+import { Auth } from '../decorators/auth.decorator';
+import { RoleEnum } from '../enums/role.enum';
+import { CurrentUser } from '../decorators/user.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth('users')
@@ -12,15 +12,8 @@ import {ApiBearerAuth,ApiOperation,ApiResponse,ApiTags,} from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new user' })
-  @ApiResponse({ status: 201, description: 'User created successfully', type: CreateUserDto })
-  @ApiResponse({ status: 400, description: 'Invalid parameters',  })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   @Get()
+  @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'List all registered users' })
   @ApiResponse({ status: 200, description: 'Lists of all users' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
@@ -28,16 +21,18 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id/profile')
+  @Get('profile')
+  @Auth()
   @ApiOperation({ summary: 'Search user profile by ID' })
   @ApiResponse({ status: 200, description: 'User profile found', type: CreateUserDto })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  findProfile(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findProfile(id);
+  findProfile(@CurrentUser() currentUser: any) {
+    return this.usersService.findProfile(currentUser.userId);
   }
 
   @Get(':id')
+  @Auth([RoleEnum.admin])
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiResponse({ status: 404, description: 'User not found', })
   @ApiOperation({ summary: 'Search a user by ID' })
@@ -46,18 +41,17 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @Auth([RoleEnum.admin], { selfPermission: true })
   @ApiOperation({ summary: 'Update a user by ID' })
   @ApiResponse({ status: 200, description: 'User updated' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Patch(':id/delete')
+  @Auth([RoleEnum.admin], { selfPermission: true })
   @ApiOperation({ summary: 'Deactivate a user by ID' })
   @ApiResponse({ status: 200, description: 'User successfully deactivated' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -65,5 +59,4 @@ export class UsersController {
   softDelete(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.softDelete(id);
   }
-  
 }

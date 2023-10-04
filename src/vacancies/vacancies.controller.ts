@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { VacanciesService } from './vacancies.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
@@ -8,6 +8,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @Controller('vacancies')
 export class VacanciesController {
   constructor(private readonly vacanciesService: VacanciesService) {}
+
 
   @Post()
   @ApiOperation({ summary: 'Create a new vacancy as an advertiser'})
@@ -23,20 +24,20 @@ export class VacanciesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Search for a vacancy by an ID'})
-  findOne(@Param('id') id: string) {
-    return this.vacanciesService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.vacanciesService.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a vacancy by an ID'})
   update(@Param('id') id: string, @Body() updateVacancyDto: UpdateVacancyDto) {
-    return this.vacanciesService.update(+id, updateVacancyDto);
+    return this.vacanciesService.update(id, updateVacancyDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes a vacancy by an ID'})
   remove(@Param('id') id: string) {
-    return this.vacanciesService.remove(+id);
+    return this.vacanciesService.remove(id);
   }
 }
 
