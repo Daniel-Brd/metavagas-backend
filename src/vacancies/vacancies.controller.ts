@@ -4,7 +4,7 @@ import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { CurrentUser } from '../decorators/user.decorator';
 import { Auth } from '../decorators/auth.decorator';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { RoleEnum } from '../enums/role.enum';
 
 @Controller('vacancies')
@@ -12,9 +12,9 @@ export class VacanciesController {
   constructor(
     private readonly vacanciesService: VacanciesService,
     private readonly usersService: UsersService
-  ) {}
+  ) { }
 
-  @Auth([RoleEnum.admin])
+  @Auth([RoleEnum.advertiser])
   @Post()
   create(@Body() createVacancyDto: CreateVacancyDto, @CurrentUser() currentUser: any) {
     return this.vacanciesService.create(createVacancyDto, currentUser);
@@ -43,5 +43,5 @@ export class VacanciesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.vacanciesService.remove(id);
-  }
+  }
 }
