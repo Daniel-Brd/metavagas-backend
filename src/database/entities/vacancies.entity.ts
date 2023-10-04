@@ -47,6 +47,9 @@ export class Vacancy {
   @UpdateDateColumn()
   updateAt: Date;
 
+  @Column({ nullable: true })
+  companyName: string;
+
   @ManyToMany(() => Technology, (technology) => technology.vacancies)
   @JoinTable({ name: 'vacancy_technology' })
   technologies: Technology[]
