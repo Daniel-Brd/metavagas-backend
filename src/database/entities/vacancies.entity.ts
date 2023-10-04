@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -35,10 +36,13 @@ export class Vacancy {
   @Column({ type: 'varchar', length: 64, nullable: false })
   level: string;
 
-  @ManyToOne(() => Company)
-  companyId: Company;
+  @ManyToOne(() => Company, company => company.vacancies)
+  @JoinColumn({ name: 'companyId' })
 
-  @ManyToOne(() => User)
+  @Column()
+  companyId: string;
+
+  @ManyToOne(() => User, user => user.advertisedVacancies)
   advertiserId: User;
 
   @CreateDateColumn()
@@ -47,10 +51,7 @@ export class Vacancy {
   @UpdateDateColumn()
   updateAt: Date;
 
-  @Column({ nullable: true })
-  companyName: string;
-
   @ManyToMany(() => Technology, (technology) => technology.vacancies)
   @JoinTable({ name: 'vacancy_technology' })
-  technologies: Technology[]
+  technologies: Technology[]
 }
