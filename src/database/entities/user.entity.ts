@@ -1,7 +1,8 @@
 import * as bcrypt from 'bcrypt'
 import { InternalServerErrorException } from "@nestjs/common";
 import { RoleEnum } from "../../enums/role.enum";
-import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Entity } from "typeorm";
+import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Entity, OneToMany } from "typeorm";
+import { Vacancy } from './vacancies.entity';
 
 @Entity()
 export class User {
@@ -29,6 +30,9 @@ export class User {
   @UpdateDateColumn()
   updateAt: Date;
 
+  @OneToMany(() => Vacancy, vacancy => vacancy.advertiserId)
+   advertisedVacancies: Vacancy[];
+
   @BeforeInsert()
   @BeforeUpdate()
   async passwordHash() {
@@ -37,6 +41,4 @@ export class User {
     } catch (error) {
       console.log(error)
       throw new InternalServerErrorException('Password hash error');
-    }
-  }
-}
+}}}
