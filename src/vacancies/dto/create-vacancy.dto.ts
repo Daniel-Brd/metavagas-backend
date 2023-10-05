@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { User } from '../../database/entities/user.entity';
 
 export class CreateVacancyDto {
   @IsNotEmpty()
@@ -27,7 +26,6 @@ export class CreateVacancyDto {
   level: string;
 
   @IsNotEmpty()
+  @IsString()
   companyName: string;
-
-  advertiserId: User;
 }
