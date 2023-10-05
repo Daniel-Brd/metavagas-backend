@@ -13,7 +13,7 @@ export class Company {
   city: string;
 
   @Column({ type: 'varchar', length: 128, nullable: false })
-  state: string; 
+  state: string;
 
   @Column({ type: 'varchar', length: 128, nullable: false })
   address: string;
@@ -24,6 +24,6 @@ export class Company {
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @OneToMany(() => Vacancy, vacancy => vacancy.companyId)
-  vacancies?: Vacancy[];
+  @OneToMany(() => Vacancy, vacancy => vacancy.company)
+  vacancies: Vacancy[];
 }
