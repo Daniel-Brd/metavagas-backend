@@ -1,7 +1,7 @@
 import { Controller, Get, Body, Patch, Param, ParseUUIDPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {ApiBearerAuth,ApiOperation,ApiResponse,ApiTags,} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { RoleEnum } from '../enums/role.enum';
 import { CurrentUser } from '../decorators/user.decorator';
@@ -10,7 +10,7 @@ import { CurrentUser } from '../decorators/user.decorator';
 @ApiBearerAuth('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get()
   @Auth([RoleEnum.admin])
@@ -24,7 +24,7 @@ export class UsersController {
   @Get('profile')
   @Auth()
   @ApiOperation({ summary: 'Search user profile by ID' })
-  @ApiResponse({ status: 200, description: 'User profile found', type: CreateUserDto })
+  @ApiResponse({ status: 200, description: 'User profile found' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'User not found' })
   findProfile(@CurrentUser() currentUser: any) {
