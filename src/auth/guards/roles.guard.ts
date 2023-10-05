@@ -23,11 +23,17 @@ export class RolesGuard implements CanActivate {
 
     isSelfPermission ? isSelfPermission = Object.values(isSelfPermission)[0] : false
 
+    const isOwner = user.vacancies.find(({ id }) => id === params.id)
+
     if (!requiredRoles) {
       return true;
     }
 
     if (isSelfPermission && params.id === user.userId) {
+      return true
+    }
+
+    if (isOwner) {
       return true
     }
 

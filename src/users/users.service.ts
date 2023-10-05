@@ -53,7 +53,8 @@ export class UsersService {
     try {
       const user = await this.usersRepository.findOne({
         where: { email },
-        select: ['id', 'name', 'email', 'password', 'isActive', 'role']
+        select: ['id', 'name', 'email', 'password', 'isActive', 'role', 'vacancies'],
+        relations: ['vacancies']
       });
 
       return user
@@ -66,7 +67,8 @@ export class UsersService {
   async findProfile(id: string) {
     try {
       const profile = await this.usersRepository.findOne({
-        where: { id }
+        where: { id },
+        relations: ['vacancies']
       })
       return profile
     } catch (error) {

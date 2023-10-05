@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt'
 import { InternalServerErrorException } from "@nestjs/common";
 import { RoleEnum } from "../../enums/role.enum";
 import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Entity, OneToMany } from "typeorm";
+import { Vacancy } from './vacancies.entity';
 
 @Entity()
 export class User {
@@ -22,6 +23,9 @@ export class User {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @OneToMany(() => Vacancy, (vacancies) => vacancies.advertiser)
+  vacancies: Vacancy[]
 
   @CreateDateColumn()
   createdAt: Date;
