@@ -1,13 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpException } from '@nestjs/common';
+
 import { UsersController } from './users.controller';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 import { usersServiceMock } from '../testing/mocks/users-mocks/users-service.mock';
-import { createUserMock } from '../testing/mocks/users-mocks/create-user.mock';
 import { usersListMock } from '../testing/mocks/users-mocks/users-list.mock';
 import { updateUserMock } from '../testing/mocks/users-mocks/update-user.mock';
 import { userProfileMock } from '../testing/mocks/users-mocks/user-profile.mock';
-
-import { HttpException } from '@nestjs/common';
+import { authGuardMock } from '../testing/mocks/auth-mocks/auth-guard.mock';
+import { rolesGuardMock } from '../testing/mocks/auth-mocks/roles-guard.mock';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -16,7 +19,10 @@ describe('UsersController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [usersServiceMock],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard).useValue(authGuardMock)
+      .overrideGuard(RolesGuard).useValue(rolesGuardMock)
+      .compile()
 
     controller = module.get<UsersController>(UsersController);
   });
