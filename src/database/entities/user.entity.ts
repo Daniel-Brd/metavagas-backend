@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt'
 import { InternalServerErrorException } from "@nestjs/common";
 import { RoleEnum } from "../../enums/role.enum";
-import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Entity } from "typeorm";
+import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, Entity, OneToMany } from "typeorm";
 
 @Entity()
 export class User {
