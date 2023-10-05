@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Company } from '../database/entities/company.entity';
 
 @ApiTags('companies')
 @Controller('companies')
 export class CompaniesController {
-  constructor(private readonly companiesService: CompaniesService) {}
+  constructor(private readonly companiesService: CompaniesService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create a new company'})
@@ -17,8 +18,8 @@ export class CompaniesController {
 
   @Get()
   @ApiOperation({ summary: 'List all registered companies' })
-  findAll() {
-    return this.companiesService.findAll();
+  async findAll(@Query('name') name?: string): Promise<Company[]> {
+    return await this.companiesService.findAll(name);
   }
 
   @Get(':id')

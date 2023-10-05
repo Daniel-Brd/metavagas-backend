@@ -3,7 +3,7 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from '../database/entities/company.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class CompaniesService {
@@ -21,13 +21,19 @@ export class CompaniesService {
 
     } catch (error: any) {
       
-      throw new HttpException(error.message || 'Internal server error', error.status || 500)
+      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
     }
   }
 
-  async findAll(): Promise<Company[]> {
-    return await this.companyRepository.find();
-  }
+  async findAll(name?: string): Promise<Company[]> {
+    if (name) {
+        return await this.companyRepository.find({
+            where: { name: Like(`%${name}%`) },
+            relations: ['vacancies']
+        });
+    }
+    return await this.companyRepository.find({ relations: ['vacancies'] });
+}
 
   async findById(id: string): Promise<Company>{
 
@@ -38,7 +44,7 @@ export class CompaniesService {
     });
   
       if (!company) {
-        throw new HttpException('Company not found', 404)
+        throw new HttpException('Company not found.', 404)
       }
   
       return company;
@@ -52,12 +58,11 @@ export class CompaniesService {
     const existingCompany = await this.findById(id);
 
     if (!existingCompany) {
-      throw new HttpException('Company not found', 404);
+      throw new HttpException('Company not found.', 404);
     }
     const updatedCompany = this.companyRepository.merge(existingCompany, updateCompanyDto);
 
     const savedCompany = await this.companyRepository.save(updatedCompany);
 
     return savedCompany;
-  }
-}
+}}

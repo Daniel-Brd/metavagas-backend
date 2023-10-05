@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Company } from 'src/database/entities/company.entity';
-import { User } from 'src/database/entities/user.entity';
 
 export class CreateVacancyDto {
   @ApiProperty()
@@ -36,11 +34,6 @@ export class CreateVacancyDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  companyId: Company;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  advertiserId: User;
+  @IsString()
+  companyName: string;
 }
