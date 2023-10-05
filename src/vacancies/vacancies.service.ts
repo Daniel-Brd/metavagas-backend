@@ -18,19 +18,26 @@ export class VacanciesService {
 
   async create(createVacancyDto: CreateVacancyDto, currentUser: any) {
     try {
+      const { vacancyRole, wage, location, vacancyType, vacancyDescription, level, companyName } = createVacancyDto
 
-      const company = await this.companyRepository.findOne({
-        where: { name: createVacancyDto.companyName }
+      const company = await this.companyRepository.findOneBy({
+        name: companyName
       })
 
       if (!company) {
         throw new HttpException('Company not found.', 404);
       }
       const tempVacancies = this.VacanciesRepository.create({
-        ...createVacancyDto,
-        companyId: company.id,
-        advertiserId: currentUser.userId
-      });
+        vacancyRole,
+        wage,
+        location,
+        vacancyType,
+        vacancyDescription,
+        level,
+        company: company,
+        advertiser: currentUser
+      })
+
       const vacancies = await this.VacanciesRepository.save(tempVacancies);
       return vacancies;
     } catch (error) {
@@ -53,10 +60,12 @@ export class VacanciesService {
     }
   }
 
-  async findById(id: string): Promise<Vacancy> {
+  async findById(id: string) {
     try {
-      const vacancy = await this.VacanciesRepository.findOneBy({ id });
-      return vacancy;
+      const vacancy = await this.VacanciesRepository.findOne({ where: { id }, relations: ['companyId', 'advertiserId'] });
+
+      const result = { id: vacancy.id, companyName: vacancy.company.name, advertiserName: vacancy.advertiser.name }
+      return result;
     } catch (error) {
       throw new HttpException('Vacancy not found.', 404);
 
@@ -99,5 +108,7 @@ export class VacanciesService {
       throw new HttpException(
         error.message || 'Internal server error',
         error.status || 500,
-    );
-}}}
+      );
+    }
+  }
+}
