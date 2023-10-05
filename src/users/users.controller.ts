@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swag
 import { Auth } from '../decorators/auth.decorator';
 import { RoleEnum } from '../enums/role.enum';
 import { CurrentUser } from '../decorators/user.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @ApiTags('users')
 @ApiBearerAuth('users')
