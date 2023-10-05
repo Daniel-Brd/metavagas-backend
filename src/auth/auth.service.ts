@@ -37,7 +37,7 @@ export class AuthService {
     try {
       const user = await this.usersService.findByEmail(payload.email);
 
-      const { id, name, email, password, role, isActive } = user;
+      const { id, name, email, password, role, isActive, vacancies } = user;
 
       const isPasswordValid = await bcrypt.compare(payload.password, password);
 
@@ -51,6 +51,7 @@ export class AuthService {
         userRole: role,
         isActive,
         userEmail: email,
+        vacancies
       };
 
       return {
