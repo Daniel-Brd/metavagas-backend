@@ -9,8 +9,6 @@ async function bootstrap() {
 
   app.enableCors();
 
-  const configService = app.get<ConfigService>(ConfigService)
-
   const config = new DocumentBuilder()
     .setTitle('Documentation Metavagas')
     .setDescription('This documentation is about metavagas app.')
