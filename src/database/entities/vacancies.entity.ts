@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -36,10 +37,10 @@ export class Vacancy {
   level: string;
 
   @ManyToOne(() => Company)
-  companyId: Company;
+  company: Company;
 
   @ManyToOne(() => User)
-  advertiserId: User;
+  advertiser: User;
 
   @CreateDateColumn()
   createdAt: Date;

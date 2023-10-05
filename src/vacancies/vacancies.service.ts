@@ -1,25 +1,55 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
-import { Vacancy } from 'src/database/entities/vacancies.entity';
+import { Vacancy } from '../database/entities/vacancies.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Company } from '../database/entities/company.entity';
+import { User } from 'src/database/entities/user.entity';
+
 
 @Injectable()
 export class VacanciesService {
   constructor(
     @InjectRepository(Vacancy)
-    private VacanciesRepository: Repository<Vacancy>,
-  ) {}
+    private vacanciesRepository: Repository<Vacancy>,
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>
+  ) { }
 
-  async create(createVacancyDto: CreateVacancyDto) {
+  async create(createVacancyDto: CreateVacancyDto, currentUser: any) {
     try {
-      const tempVacancies = this.VacanciesRepository.create(createVacancyDto);
-      const vacancies = await this.VacanciesRepository.save(tempVacancies);
+      const { vacancyRole, wage, location, vacancyType, vacancyDescription, level, companyName } = createVacancyDto
+
+      const company = await this.companyRepository.findOneBy({
+        name: companyName
+      })
+
+      if (!company) {
+        throw new HttpException('Company not found.', 404);
+      }
+
+      const user = await this.usersRepository.findOneBy({ id: currentUser.userId })
+
+      const tempVacancies = this.vacanciesRepository.create({
+        vacancyRole,
+        wage,
+        location,
+        vacancyType,
+        vacancyDescription,
+        level,
+        company: company,
+        advertiser: user
+      })
+
+      const vacancies = await this.vacanciesRepository.save(tempVacancies);
+
       return vacancies;
-    } catch (error: any) {
+    } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
+        error.message || 'Internal server error.',
         error.statusCode || 500,
       );
     }
@@ -27,22 +57,25 @@ export class VacanciesService {
 
   async findAll() {
     try {
-      const vacanciesList = await this.VacanciesRepository.find();
+      const vacanciesList = await this.vacanciesRepository.find({ relations: ['company'] });
       return vacanciesList;
     } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
+        error.message || 'Internal server error.',
         error.status || 500,
       );
     }
   }
 
-  async findById(id: string): Promise<Vacancy> {
+  async findById(id: string) {
     try {
-      const vacancy = await this.VacanciesRepository.findOneBy({ id });
-      return vacancy;
+      const vacancy = await this.vacanciesRepository.findOne({ where: { id }, relations: ['company', 'advertiser'] });
+
+      const result = { id: vacancy.id, companyName: vacancy.company.name, advertiserName: vacancy.advertiser.name }
+      return result;
     } catch (error) {
-      throw new NotFoundException();
+      throw new HttpException('Vacancy not found.', 404);
+
     }
   }
 
@@ -52,8 +85,8 @@ export class VacanciesService {
       if (!vacancy) {
         throw new HttpException('Vacancy not found.', 404);
       }
-      const tempAffected = this.VacanciesRepository.create(updateVacancyDto);
-      const affected = await this.VacanciesRepository.update(
+      const tempAffected = this.vacanciesRepository.create(updateVacancyDto);
+      const affected = await this.vacanciesRepository.update(
         { id },
         tempAffected,
       );
@@ -63,7 +96,7 @@ export class VacanciesService {
       return await this.findById(id);
     } catch (error) {
       throw new HttpException(
-        error.message || 'Internal server error',
+        error.message || 'Internal server error.',
         error.status || 500,
       );
     }
@@ -76,7 +109,8 @@ export class VacanciesService {
       if (!vacancy) {
         throw new HttpException('Vacancy not found.', 404);
       }
-      const removed = await this.VacanciesRepository.delete({ id });
+      await this.vacanciesRepository.delete({ id });
+
       return { message: 'vacancy successfully deleted', removed: vacancy };
     } catch (error) {
       throw new HttpException(
