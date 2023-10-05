@@ -7,6 +7,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
+  const configService = app.get<ConfigService>(ConfigService)
+
   const config = new DocumentBuilder()
     .setTitle('Documentation Metavagas')
     .setDescription('This documentation is about metavagas app.')
