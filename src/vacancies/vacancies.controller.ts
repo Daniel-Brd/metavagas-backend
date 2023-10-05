@@ -17,39 +17,41 @@ export class VacanciesController {
     private readonly usersService: UsersService
   ) { }
 
-  @Auth([RoleEnum.advertiser])
   @Post()
-  @ApiOperation({ summary: 'Create a new vacancy as an advertiser'})
+  @Auth([RoleEnum.advertiser])
+  @ApiOperation({ summary: 'Create a new vacancy as an advertiser' })
   create(@Body() createVacancyDto: CreateVacancyDto, @CurrentUser() currentUser: any) {
     return this.vacanciesService.create(createVacancyDto, currentUser);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Search all registered vacancies'})
+  @ApiOperation({ summary: 'Search all registered vacancies' })
   findAll() {
     return this.vacanciesService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Search for a vacancy by an ID'})
+  @ApiOperation({ summary: 'Search for a vacancy by an ID' })
   findById(@Param('id') id: string) {
     return this.vacanciesService.findById(id);
   }
 
-  @Auth()
+  @Auth([RoleEnum.advertiser])
   findProfile(@CurrentUser() CurrentUser: any) {
     return this.usersService.findProfile(CurrentUser.userId)
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a vacancy by an ID'})
+  @Auth([RoleEnum.admin])
+  @ApiOperation({ summary: 'Update a vacancy by an ID' })
   update(@Param('id') id: string, @Body() updateVacancyDto: UpdateVacancyDto) {
     return this.vacanciesService.update(id, updateVacancyDto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Deletes a vacancy by an ID'})
+  @Auth([RoleEnum.admin])
+  @ApiOperation({ summary: 'Deletes a vacancy by an ID' })
   remove(@Param('id') id: string) {
     return this.vacanciesService.remove(id);
-  }
+  }
 }
