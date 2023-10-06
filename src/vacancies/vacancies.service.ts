@@ -16,7 +16,7 @@ export class VacanciesService {
     @InjectRepository(Company)
     private companyRepository: Repository<Company>,
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
   ) { }
 
   async create(createVacancyDto: CreateVacancyDto, currentUser: any) {
@@ -25,13 +25,15 @@ export class VacanciesService {
 
       const company = await this.companyRepository.findOneBy({
         name: companyName
-      })
+      });
 
       if (!company) {
         throw new HttpException('Company not found.', 404);
       }
 
-      const user = await this.usersRepository.findOneBy({ id: currentUser.userId })
+      const user = await this.usersRepository.findOneBy({
+        id: currentUser.userId,
+      });
 
       const tempVacancies = this.vacanciesRepository.create({
         vacancyRole,
@@ -41,8 +43,8 @@ export class VacanciesService {
         vacancyDescription,
         level,
         company: company,
-        advertiser: user
-      })
+        advertiser: user,
+      });
 
       const vacancies = await this.vacanciesRepository.save(tempVacancies);
 
@@ -57,7 +59,9 @@ export class VacanciesService {
 
   async findAll() {
     try {
-      const vacanciesList = await this.vacanciesRepository.find({ relations: ['company'] });
+      const vacanciesList = await this.vacanciesRepository.find({
+        relations: ['company'],
+      });
       return vacanciesList;
     } catch (error) {
       throw new HttpException(
@@ -69,19 +73,24 @@ export class VacanciesService {
 
   async findById(id: string) {
     try {
-      const vacancy = await this.vacanciesRepository.findOne({ where: { id }, relations: ['company', 'advertiser'] });
+      const vacancy = await this.vacanciesRepository.findOne({
+        where: { id },
+        relations: ['company', 'advertiser'],
+      });
 
-      const result = { id: vacancy.id, companyName: vacancy.company.name, advertiserName: vacancy.advertiser.name }
-      return result;
+      return {
+        id: vacancy.id,
+        companyName: vacancy.company.name,
+        advertiserName: vacancy.advertiser.name,
+      };
     } catch (error) {
       throw new HttpException('Vacancy not found.', 404);
-
     }
   }
 
   async update(id: string, updateVacancyDto: UpdateVacancyDto) {
     try {
-      const vacancy = await this.findById(id);
+      const vacancy = await this.vacanciesRepository.findOneBy({ id });
       if (!vacancy) {
         throw new HttpException('Vacancy not found.', 404);
       }
@@ -93,7 +102,8 @@ export class VacanciesService {
       if (!affected) {
         throw new HttpException('Something went wrong with update.', 400);
       }
-      return await this.findById(id);
+
+      return this.vacanciesRepository.findOneBy({ id });
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
@@ -104,7 +114,7 @@ export class VacanciesService {
 
   async remove(id: string) {
     try {
-      const vacancy = await this.findById(id);
+      const vacancy = await this.vacanciesRepository.findOneBy({ id });
 
       if (!vacancy) {
         throw new HttpException('Vacancy not found.', 404);
