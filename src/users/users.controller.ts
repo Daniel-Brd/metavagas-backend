@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swag
 import { Auth } from '../decorators/auth.decorator';
 import { RoleEnum } from '../enums/role.enum';
 import { CurrentUser } from '../decorators/user.decorator';
+import { PermissionEnum } from '../enums/permission.enum';
 
 @ApiTags('users')
 @ApiBearerAuth('users')
@@ -41,7 +42,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @Auth([RoleEnum.admin], { selfPermission: true })
+  @Auth([RoleEnum.admin], [PermissionEnum.self])
   @ApiOperation({ summary: 'Update a user by ID' })
   @ApiResponse({ status: 200, description: 'User updated' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -51,7 +52,7 @@ export class UsersController {
   }
 
   @Patch(':id/delete')
-  @Auth([RoleEnum.admin], { selfPermission: true })
+  @Auth([RoleEnum.admin], [PermissionEnum.self])
   @ApiOperation({ summary: 'Deactivate a user by ID' })
   @ApiResponse({ status: 200, description: 'User successfully deactivated' })
   @ApiResponse({ status: 404, description: 'User not found' })

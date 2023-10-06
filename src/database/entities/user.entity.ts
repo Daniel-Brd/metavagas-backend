@@ -36,11 +36,13 @@ export class User {
   @BeforeInsert()
   @BeforeUpdate()
   async passwordHash() {
+    if (!this.password || this.password.trim() === '') {
+      return; 
+    }
     try {
-      this.password = await bcrypt.hash(this.password, 10)
+      this.password = await bcrypt.hash(this.password, 10);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new InternalServerErrorException('Password hash error');
     }
-  }
-}
+  }}

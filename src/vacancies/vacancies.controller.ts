@@ -8,6 +8,7 @@ import { CurrentUser } from '../decorators/user.decorator';
 import { Auth } from '../decorators/auth.decorator';
 import { UsersService } from '../users/users.service';
 import { RoleEnum } from '../enums/role.enum';
+import { PermissionEnum } from 'src/enums/permission.enum';
 
 @ApiTags('vacancies')
 @Controller('vacancies')
@@ -42,14 +43,14 @@ export class VacanciesController {
   }
 
   @Patch(':id')
-  @Auth([RoleEnum.admin])
+  @Auth([RoleEnum.admin], [PermissionEnum.owner])
   @ApiOperation({ summary: 'Update a vacancy by an ID' })
   update(@Param('id') id: string, @Body() updateVacancyDto: UpdateVacancyDto) {
     return this.vacanciesService.update(id, updateVacancyDto);
   }
 
   @Delete(':id')
-  @Auth([RoleEnum.admin])
+  @Auth([RoleEnum.admin], [PermissionEnum.owner])
   @ApiOperation({ summary: 'Deletes a vacancy by an ID' })
   remove(@Param('id') id: string) {
     return this.vacanciesService.remove(id);
