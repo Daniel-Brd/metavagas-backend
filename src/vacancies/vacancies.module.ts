@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Vacancy } from '../database/entities/vacancies.entity';
 import { Company } from '../database/entities/company.entity';
 import { UsersModule } from '../users/users.module';
-import { User } from 'src/database/entities/user.entity';
+import { User } from '../database/entities/user.entity';
+import { Technology } from '../database/entities/technology.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vacancy, Company, User]),
+  imports: [TypeOrmModule.forFeature([Vacancy, Company, User, Technology]),
     UsersModule
   ],
   controllers: [VacanciesController],

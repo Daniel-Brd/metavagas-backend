@@ -2,10 +2,11 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { Vacancy } from '../database/entities/vacancies.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from '../database/entities/company.entity';
-import { User } from 'src/database/entities/user.entity';
+import { User } from '../database/entities/user.entity';
+import { Technology } from '../database/entities/technology.entity';
 
 
 @Injectable()
@@ -14,16 +15,18 @@ export class VacanciesService {
     @InjectRepository(Vacancy)
     private vacanciesRepository: Repository<Vacancy>,
     @InjectRepository(Company)
-    private companyRepository: Repository<Company>,
+    private companiesRepository: Repository<Company>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Technology)
+    private technologiesRepository: Repository<Technology>
   ) { }
 
   async create(createVacancyDto: CreateVacancyDto, currentUser: any) {
     try {
-      const { vacancyRole, wage, location, vacancyType, vacancyDescription, level, companyName } = createVacancyDto
+      const { vacancyRole, wage, location, vacancyType, vacancyDescription, level, companyName, technologies } = createVacancyDto
 
-      const company = await this.companyRepository.findOneBy({
+      const company = await this.companiesRepository.findOneBy({
         name: companyName
       });
 
@@ -35,6 +38,10 @@ export class VacanciesService {
         id: currentUser.userId,
       });
 
+      const technologiesArray = await this.technologiesRepository.find({
+        where: { tecName: In(technologies) }
+      })
+
       const tempVacancies = this.vacanciesRepository.create({
         vacancyRole,
         wage,
@@ -44,6 +51,7 @@ export class VacanciesService {
         level,
         company: company,
         advertiser: user,
+        technologies: technologiesArray
       });
 
       const vacancies = await this.vacanciesRepository.save(tempVacancies);
@@ -60,7 +68,7 @@ export class VacanciesService {
   async findAll() {
     try {
       const vacanciesList = await this.vacanciesRepository.find({
-        relations: ['company'],
+        relations: ['company', 'advertiser', 'technologies'],
       });
       return vacanciesList;
     } catch (error) {
@@ -94,7 +102,14 @@ export class VacanciesService {
       if (!vacancy) {
         throw new HttpException('Vacancy not found.', 404);
       }
-      const tempAffected = this.vacanciesRepository.create(updateVacancyDto);
+
+
+      const technologiesArray = await this.technologiesRepository.find({
+        where: { tecName: In(updateVacancyDto.technologies) }
+      })
+
+
+      const tempAffected = this.vacanciesRepository.create({ ...updateVacancyDto, technologies: technologiesArray });
       const affected = await this.vacanciesRepository.update(
         { id },
         tempAffected,
