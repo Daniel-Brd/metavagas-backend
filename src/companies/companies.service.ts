@@ -27,21 +27,28 @@ export class CompaniesService {
   }
 
   async findAll(query?: QueryCompanyDTO): Promise<Company[]> {
+    try {
+      const whereConditions = {};
 
+      for (const key in query) {
+        if (query[key]) {
+          whereConditions[key] = Like(`%${query[key]}%`);
+        }
+      }
 
-    if (!Object.keys(query).length) {
+      if (query) {
+        return this.companyRepository.find({
+          where: whereConditions,
+          relations: ['vacancies']
+        })
+      }
+
       return this.companyRepository.find({ relations: ['vacancies'] });
+
+    } catch (error) {
+      throw new HttpException(error.message || 'Internal server error', error.status || 500)
     }
 
-    if (query.name) {
-      return this.companyRepository.find({
-        where: {
-          ...query,
-          name: Like(`${query.name}%`)
-        },
-        relations: ['vacancies']
-      });
-    }
   }
 
   async findById(id: string): Promise<Company> {
@@ -57,7 +64,7 @@ export class CompaniesService {
       }
 
       return company;
-    } catch (error: any) {
+    } catch (error) {
 
       throw new HttpException(error.message || 'Internal server error', error.status || 500)
     }
