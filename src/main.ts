@@ -13,10 +13,12 @@ async function bootstrap() {
     .setTitle('Documentation Metavagas')
     .setDescription('This documentation is about metavagas app.')
     .setVersion('1.0')
+    .addTag('auth')
     .addTag('users')
     .addTag('companies')
     .addTag('technologies')
     .addTag('vacancies')
+    .addServer('https://metavagasapi.onrender.com/', 'API METAVAGAS')
     .setContact(
       'API Diagram ',
       'https://drive.google.com/file/d/1Nk7m-U-1q4g2fZOHsmoUFRJbxC375ZMm/view',
@@ -27,16 +29,18 @@ async function bootstrap() {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        name: 'JWT',
+        name: 'JWT TOKEN',
         description: 'Enter JWT Token',
-        in: 'header',
       },
       'JWT-auth',
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('v1/docs', app, document);
+  SwaggerModule.setup('v1/docs', app, document, {
+   customSiteTitle: 'MetaVagas API Documentation',
+   
+  });
 
   const configService = app.get<ConfigService>(ConfigService);
 

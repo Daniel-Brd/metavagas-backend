@@ -2,11 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TechnologiesService } from './technologies.service';
 import { CreateTechnologyDto } from './dto/create-technology.dto';
 import { UpdateTechnologyDto } from './dto/update-technology.dto';
-import {  ApiOperation, ApiTags } from '@nestjs/swagger';
+import {  ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { RoleEnum } from 'src/enums/role.enum';
 
 @ApiTags('technologies')
+@ApiBearerAuth('JWT-auth')
 @Controller('technologies')
 export class TechnologiesController {
   constructor(private readonly technologiesService: TechnologiesService) {}
@@ -14,6 +15,8 @@ export class TechnologiesController {
   @Post()
   @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Create a new technology as an admin'})
+  @ApiResponse({ status: 201, description: 'Technology created successfully'})
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(@Body() createTechnologyDto: CreateTechnologyDto) {
     return this.technologiesService.create(createTechnologyDto);
   }
@@ -21,12 +24,16 @@ export class TechnologiesController {
   @Get()
   @Auth()
   @ApiOperation({ summary: 'Search all registered technologies'})
+  @ApiResponse({ status: 200, description: 'Lists of all technologies' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   findAll() {
     return this.technologiesService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Search for a technology by an ID'})
+  @ApiResponse({ status: 200, description: 'Technology found' })
+  @ApiResponse({ status: 404, description: 'Technology not found', })
   findOne(@Param('id') id: string) {
     return this.technologiesService.findById(id);
   }
@@ -34,6 +41,9 @@ export class TechnologiesController {
   @Patch(':id')
   @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Update a technology by an ID'})
+  @ApiResponse({ status: 200, description: 'Technology updated' })
+  @ApiResponse({ status: 404, description: 'Technology not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   update(@Param('id') id: string, @Body() updateTechnologyDto: UpdateTechnologyDto) {
     return this.technologiesService.update(id, updateTechnologyDto);
   }
@@ -41,6 +51,9 @@ export class TechnologiesController {
   @Delete(':id')
   @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Deletes a technology by an ID'})
+  @ApiResponse({ status: 200, description: 'Successfully deleted technology' })
+  @ApiResponse({ status: 404, description: 'Technology not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   remove(@Param('id') id: string) {
     return this.technologiesService.remove(id);
   }
