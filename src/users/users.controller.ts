@@ -8,7 +8,7 @@ import { CurrentUser } from '../decorators/user.decorator';
 import { PermissionEnum } from '../enums/permission.enum';
 
 @ApiTags('users')
-@ApiBearerAuth('users')
+@ApiBearerAuth('JWT-auth')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
@@ -34,9 +34,9 @@ export class UsersController {
 
   @Get(':id')
   @Auth([RoleEnum.admin])
+  @ApiOperation({ summary: 'Search a user by ID' })
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiResponse({ status: 404, description: 'User not found', })
-  @ApiOperation({ summary: 'Search a user by ID' })
   findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findById(id);
   }
