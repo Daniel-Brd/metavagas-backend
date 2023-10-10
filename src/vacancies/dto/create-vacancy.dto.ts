@@ -36,4 +36,8 @@ export class CreateVacancyDto {
   @IsNotEmpty()
   @IsString()
   companyName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  technologies: string[]
 }
