@@ -8,5 +8,6 @@ import { Technology } from '../database/entities/technology.entity';
   imports: [TypeOrmModule.forFeature([Technology])],
   controllers: [TechnologiesController],
   providers: [TechnologiesService],
+  exports: [TechnologiesService],
 })
 export class TechnologiesModule {}

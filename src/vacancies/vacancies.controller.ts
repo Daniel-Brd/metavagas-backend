@@ -41,11 +41,8 @@ export class VacanciesController {
   @ApiResponse({ status: 201, description: 'Vacancy created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request ' })
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
-  create(
-    @Body() createVacancyDto: CreateVacancyDto,
-    @CurrentUser() currentUser: any,
-  ) {
-    return this.vacanciesService.create(createVacancyDto, currentUser);
+  create(@Body() payload: CreateVacancyDto, @CurrentUser() currentUser: any) {
+    return this.vacanciesService.create(payload, currentUser);
   }
 
   @Get()

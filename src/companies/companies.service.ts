@@ -73,6 +73,23 @@ export class CompaniesService {
     }
   }
 
+  async findByName(name: string): Promise<Company> {
+    try {
+      const company = await this.companyRepository.findOneBy({ name });
+
+      if (!company) {
+        throw new HttpException('Company not found.', 404);
+      }
+
+      return company;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error',
+        error.status || 500,
+      );
+    }
+  }
+
   async update(id: string, updateCompanyDto: UpdateCompanyDto) {
     const existingCompany = await this.findById(id);
 

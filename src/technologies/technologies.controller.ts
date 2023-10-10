@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TechnologiesService } from './technologies.service';
 import { CreateTechnologyDto } from './dto/create-technology.dto';
@@ -39,8 +40,8 @@ export class TechnologiesController {
   @ApiOperation({ summary: 'Search all registered technologies' })
   @ApiResponse({ status: 200, description: 'Lists of all technologies' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  findAll() {
-    return this.technologiesService.findAll();
+  findAll(@Query('tecName') tecNames?: string[]) {
+    return this.technologiesService.findAll(tecNames);
   }
 
   @Get(':id')
