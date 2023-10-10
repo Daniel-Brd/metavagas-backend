@@ -27,7 +27,11 @@ export class CreateCompanyDto {
   @IsDateString()
   foundedAt: Date;
 
-  @ApiProperty({type: String,example: 'TechSolutions Ltd. is a technology company based in Contagem, Minas Gerais, founded on October 6, 2023. We are committed to innovation and excellence.' })
+  @ApiProperty({
+    type: String,
+    example:
+      'TechSolutions Ltd. is a technology company based in Contagem, Minas Gerais, founded on October 6, 2023. We are committed to innovation and excellence.',
+  })
   @IsNotEmpty()
   @IsString()
   description: string;

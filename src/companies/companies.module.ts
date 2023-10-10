@@ -9,4 +9,4 @@ import { Company } from '../database/entities/company.entity';
   controllers: [CompaniesController],
   providers: [CompaniesService],
 })
-export class CompaniesModule { }
+export class CompaniesModule {}

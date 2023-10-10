@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { VacanciesService } from './vacancies.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
@@ -18,8 +32,8 @@ import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 export class VacanciesController {
   constructor(
     private readonly vacanciesService: VacanciesService,
-    private readonly usersService: UsersService
-  ) { }
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post()
   @Auth([RoleEnum.advertiser])
@@ -27,7 +41,10 @@ export class VacanciesController {
   @ApiResponse({ status: 201, description: 'Vacancy created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request ' })
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
-  create(@Body() createVacancyDto: CreateVacancyDto, @CurrentUser() currentUser: any) {
+  create(
+    @Body() createVacancyDto: CreateVacancyDto,
+    @CurrentUser() currentUser: any,
+  ) {
     return this.vacanciesService.create(createVacancyDto, currentUser);
   }
 
@@ -48,10 +65,13 @@ export class VacanciesController {
   }
 
   @Auth([RoleEnum.advertiser])
-  @ApiResponse({ status: 200, description: 'User profile retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved successfully',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
   findProfile(@CurrentUser() CurrentUser: any) {
-    return this.usersService.findProfile(CurrentUser.userId)
+    return this.usersService.findProfile(CurrentUser.userId);
   }
 
   @Patch(':id')

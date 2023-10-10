@@ -38,8 +38,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('v1/docs', app, document, {
-   customSiteTitle: 'MetaVagas API Documentation',
-   
+    customSiteTitle: 'MetaVagas API Documentation',
   });
 
   const configService = app.get<ConfigService>(ConfigService);

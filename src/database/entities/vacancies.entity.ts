@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -48,7 +47,7 @@ export class Vacancy {
   @UpdateDateColumn()
   updateAt: Date;
 
-  @ManyToMany(() => Technology, (technology) => technology.vacancies)
+  @ManyToMany(() => Technology, technology => technology.vacancies)
   @JoinTable({ name: 'vacancy_technology' })
-  technologies: Technology[]
+  technologies: Technology[];
 }

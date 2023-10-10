@@ -1,7 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { jwtTokenMock } from './jwt-token.mock';
 
-
 export const jwtServiceMock = {
   provide: JwtService,
   useValue: {
