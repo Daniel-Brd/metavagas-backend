@@ -3,7 +3,7 @@ import { CreateTechnologyDto } from './dto/create-technology.dto';
 import { UpdateTechnologyDto } from './dto/update-technology.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Technology } from '../database/entities/technology.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TechnologiesService {
@@ -40,7 +40,7 @@ export class TechnologiesService {
       if (!tecNames) {
         return this.technologiesRepository.find();
       } else {
-        let technologies = [];
+        const technologies = [];
 
         for (let i = 0; i < tecNames.length; i++) {
           const technology = await this.findByName(tecNames[i]);
