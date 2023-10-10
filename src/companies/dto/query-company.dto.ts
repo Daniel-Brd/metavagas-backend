@@ -1,8 +1,5 @@
-export interface QueryCompanyDTO {
-  name?: string;
-  city?: string;
-  state?: string;
-  address?: string;
-  foundedAt?: Date;
-  description?: string;
-}
+import { PartialType } from "@nestjs/swagger";
+import { CreateCompanyDto } from "./create-company.dto";
+
+
+export class QueryCompanyDTO extends PartialType(CreateCompanyDto) { }

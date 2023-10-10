@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { VacanciesService } from './vacancies.service';
@@ -8,7 +8,9 @@ import { CurrentUser } from '../decorators/user.decorator';
 import { Auth } from '../decorators/auth.decorator';
 import { UsersService } from '../users/users.service';
 import { RoleEnum } from '../enums/role.enum';
-import { PermissionEnum } from 'src/enums/permission.enum';
+import { PermissionEnum } from '../enums/permission.enum';
+import { Vacancy } from '../database/entities/vacancies.entity';
+import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 
 @ApiTags('vacancies')
 @ApiBearerAuth('JWT-auth')
@@ -33,8 +35,8 @@ export class VacanciesController {
   @ApiOperation({ summary: 'Search all registered vacancies' })
   @ApiResponse({ status: 200, description: 'List of all vacancies' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  findAll() {
-    return this.vacanciesService.findAll();
+  findAll(@Query() query?: QueryVacancyDTO): Promise<Vacancy[]> {
+    return this.vacanciesService.findAll(query);
   }
 
   @Get(':id')
