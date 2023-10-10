@@ -1,5 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
@@ -10,11 +23,15 @@ import { QueryCompanyDTO } from './dto/query-company.dto';
 @ApiBearerAuth('JWT-auth')
 @Controller('companies')
 export class CompaniesController {
-  constructor(private readonly companiesService: CompaniesService) { }
+  constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new company' })
-  @ApiResponse({ status: 201, description: 'Successfully created a new company', type: CreateCompanyDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully created a new company',
+    type: CreateCompanyDto,
+  })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   create(@Body() createCompanyDto: CreateCompanyDto) {
     return this.companiesService.create(createCompanyDto);
@@ -31,7 +48,7 @@ export class CompaniesController {
   @Get(':id')
   @ApiOperation({ summary: 'Search for a company by ID' })
   @ApiResponse({ status: 200, description: 'Company found' })
-  @ApiResponse({ status: 404, description: 'Company not found', })
+  @ApiResponse({ status: 404, description: 'Company not found' })
   findOne(@Param('id') id: string) {
     return this.companiesService.findById(id);
   }

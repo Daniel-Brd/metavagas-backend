@@ -22,7 +22,11 @@ export class CreateVacancyDto {
   @IsString()
   vacancyType: string;
 
-  @ApiProperty({ type: String, example: 'Seeking a talented software developer to join our team for exciting projects.' })
+  @ApiProperty({
+    type: String,
+    example:
+      'Seeking a talented software developer to join our team for exciting projects.',
+  })
   @IsNotEmpty()
   @IsString()
   vacancyDescription: string;
@@ -39,5 +43,5 @@ export class CreateVacancyDto {
 
   @IsNotEmpty()
   @IsString()
-  technologies: string[]
+  technologies: string[];
 }

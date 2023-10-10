@@ -10,7 +10,7 @@ describe('CompaniesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CompaniesService, companyRepositoryMock ],
+      providers: [CompaniesService, companyRepositoryMock],
     }).compile();
 
     service = module.get<CompaniesService>(CompaniesService);
@@ -28,24 +28,27 @@ describe('CompaniesService', () => {
   describe('Read', () => {
     describe('findAll', () => {
       it('Should return a list of companies', async () => {
-        const result = await service.findAll()
+        const result = await service.findAll();
 
-        expect(result).toEqual(companyListMock)
-      })
-    })
+        expect(result).toEqual(companyListMock);
+      });
+    });
 
     describe('findById', () => {
       it('Should return an company', async () => {
-        const result = await service.findById(companyListMock[0].id)
+        const result = await service.findById(companyListMock[0].id);
 
-        expect(result).toEqual(companyListMock[0])
-      })
-    })
-  })
+        expect(result).toEqual(companyListMock[0]);
+      });
+    });
+  });
 
   describe('Update', () => {
     it('should update and return an updated company', async () => {
-      const result = await service.update(companyListMock[0].id, updateCompanyrMock);
+      const result = await service.update(
+        companyListMock[0].id,
+        updateCompanyrMock,
+      );
       expect(result).toEqual({ ...companyListMock[0], ...updateCompanyrMock });
     });
   });

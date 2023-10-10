@@ -9,10 +9,11 @@ import { User } from '../database/entities/user.entity';
 import { Technology } from '../database/entities/technology.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vacancy, Company, User, Technology]),
-    UsersModule
+  imports: [
+    TypeOrmModule.forFeature([Vacancy, Company, User, Technology]),
+    UsersModule,
   ],
   controllers: [VacanciesController],
   providers: [VacanciesService],
 })
-export class VacanciesModule { }
+export class VacanciesModule {}

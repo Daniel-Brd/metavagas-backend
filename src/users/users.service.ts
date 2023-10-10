@@ -9,29 +9,34 @@ import { Repository } from 'typeorm';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
-  ) { }
+    private usersRepository: Repository<User>,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const tempUser = this.usersRepository.create(createUserDto)
+      const tempUser = this.usersRepository.create(createUserDto);
 
-      const user = await this.usersRepository.save(tempUser)
+      const user = await this.usersRepository.save(tempUser);
 
       return user;
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
 
   async findAll() {
     try {
-
       const userList = await this.usersRepository.find();
 
-      return userList
+      return userList;
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
 
@@ -40,12 +45,15 @@ export class UsersService {
       const user = await this.usersRepository.findOneBy({ id });
 
       if (!user) {
-        throw new HttpException('User not found.', 404)
+        throw new HttpException('User not found.', 404);
       }
 
-      return user
+      return user;
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
 
@@ -53,26 +61,39 @@ export class UsersService {
     try {
       const user = await this.usersRepository.findOne({
         where: { email },
-        select: ['id', 'name', 'email', 'password', 'isActive', 'role', 'vacancies'],
-        relations: ['vacancies']
+        select: [
+          'id',
+          'name',
+          'email',
+          'password',
+          'isActive',
+          'role',
+          'vacancies',
+        ],
+        relations: ['vacancies'],
       });
 
-      return user
+      return user;
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
-
 
   async findProfile(id: string) {
     try {
       const profile = await this.usersRepository.findOne({
         where: { id },
-        relations: ['vacancies']
-      })
-      return profile
+        relations: ['vacancies'],
+      });
+      return profile;
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
 
@@ -81,12 +102,12 @@ export class UsersService {
       const user = await this.findById(id);
 
       if (!user) {
-        throw new HttpException('User not found.', 404)
+        throw new HttpException('User not found.', 404);
       }
 
-      const tempAffected = this.usersRepository.create(updateUserDto)
+      const tempAffected = this.usersRepository.create(updateUserDto);
 
-      const affected = await this.usersRepository.update(id, tempAffected)
+      const affected = await this.usersRepository.update(id, tempAffected);
 
       if (!affected) {
         throw new HttpException('Something went wrong with update.', 400);
@@ -94,7 +115,10 @@ export class UsersService {
 
       return await this.findById(id);
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
 
@@ -103,10 +127,12 @@ export class UsersService {
       const user = await this.findById(id);
 
       if (!user) {
-        throw new HttpException('User not found.', 404)
+        throw new HttpException('User not found.', 404);
       }
 
-      const affected = await this.usersRepository.update(id, { isActive: false })
+      const affected = await this.usersRepository.update(id, {
+        isActive: false,
+      });
 
       if (!affected) {
         throw new HttpException('Something went wrong with delete.', 400);
@@ -114,7 +140,10 @@ export class UsersService {
 
       return await this.findById(id);
     } catch (error) {
-      throw new HttpException(error.message || 'Internal server error.', error.status || 500)
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
     }
   }
 }

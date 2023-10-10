@@ -1,6 +1,6 @@
-import { AuthService } from "../../../auth/auth.service";
-import { usersListMock } from "../users-mocks/users-list.mock";
-import { jwtTokenMock } from "../jwt-mocks/jwt-token.mock";
+import { AuthService } from '../../../auth/auth.service';
+import { usersListMock } from '../users-mocks/users-list.mock';
+import { jwtTokenMock } from '../jwt-mocks/jwt-token.mock';
 
 export const authServiceMock = {
   provide: AuthService,
@@ -12,7 +12,7 @@ export const authServiceMock = {
         email: usersListMock[0].email,
         isActive: usersListMock[0].isActive,
       },
-      token: jwtTokenMock
-    })
-  }
-}
+      token: jwtTokenMock,
+    }),
+  },
+};

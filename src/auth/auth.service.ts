@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async register(payload: CreateUserDto) {
     try {
@@ -48,14 +48,14 @@ export class AuthService {
       if (!isPasswordValid) {
         throw new HttpException('invalid email or password.', 401);
       }
-      
+
       const tokenPayload = {
         userId: id,
         userName: name,
         userRole: role,
         isActive,
         userEmail: email,
-        vacancies
+        vacancies,
       };
 
       return {

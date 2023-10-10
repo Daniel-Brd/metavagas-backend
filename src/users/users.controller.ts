@@ -1,7 +1,19 @@
-import { Controller, Get, Body, Patch, Param, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { RoleEnum } from '../enums/role.enum';
 import { CurrentUser } from '../decorators/user.decorator';
@@ -11,7 +23,7 @@ import { PermissionEnum } from '../enums/permission.enum';
 @ApiBearerAuth('JWT-auth')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @Auth([RoleEnum.admin])
@@ -36,7 +48,7 @@ export class UsersController {
   @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Search a user by ID' })
   @ApiResponse({ status: 200, description: 'User found' })
-  @ApiResponse({ status: 404, description: 'User not found', })
+  @ApiResponse({ status: 404, description: 'User not found' })
   findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findById(id);
   }
@@ -47,7 +59,10 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User updated' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.update(id, updateUserDto);
   }
 
