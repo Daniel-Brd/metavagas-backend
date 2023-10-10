@@ -41,6 +41,7 @@ export class CreateVacancyDto {
   @IsString()
   companyName: string;
 
+  @ApiProperty({ type: String, example: 'React.js' })
   @IsNotEmpty()
   @IsString()
   technologies: string[];
