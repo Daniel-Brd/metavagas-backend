@@ -74,8 +74,9 @@ export class VacanciesService {
     }
   }
 
-  async findAll(query?: QueryVacancyDTO): Promise<Vacancy[]> {
+  async findAll(page: number, limit: number, query?: QueryVacancyDTO): Promise<Vacancy[]> {
     try {
+
       let technologiesArray = query.technologies;
 
       if (typeof query.technologies === 'string') {
@@ -97,12 +98,17 @@ export class VacanciesService {
         return this.vacanciesRepository.find({
           where: whereConditions,
           relations: ['company', 'advertiser', 'technologies'],
+          skip: (page - 1) * limit,
+          take: limit
         });
       }
 
       return this.vacanciesRepository.find({
         relations: ['company', 'advertiser', 'technologies'],
+        skip: (page - 1) * limit,
+        take: limit
       });
+
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
