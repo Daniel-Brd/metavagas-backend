@@ -3,15 +3,16 @@ import { VacanciesService } from './vacancies.service';
 import { VacanciesController } from './vacancies.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Vacancy } from '../database/entities/vacancies.entity';
-import { Company } from '../database/entities/company.entity';
 import { UsersModule } from '../users/users.module';
-import { User } from '../database/entities/user.entity';
-import { Technology } from '../database/entities/technology.entity';
+import { CompaniesModule } from '../companies/companies.module';
+import { TechnologiesModule } from '../technologies/technologies.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Vacancy, Company, User, Technology]),
+    TypeOrmModule.forFeature([Vacancy]),
     UsersModule,
+    CompaniesModule,
+    TechnologiesModule,
   ],
   controllers: [VacanciesController],
   providers: [VacanciesService],
