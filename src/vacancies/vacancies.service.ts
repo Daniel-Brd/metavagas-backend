@@ -94,20 +94,20 @@ export class VacanciesService {
         }
       }
 
-      if (query) {
-        return this.vacanciesRepository.find({
-          where: whereConditions,
-          relations: ['company', 'advertiser', 'technologies'],
-          skip: (page - 1) * limit,
-          take: limit
-        });
-      }
-
-      return this.vacanciesRepository.find({
+      const commonOptions = {
         relations: ['company', 'advertiser', 'technologies'],
         skip: (page - 1) * limit,
         take: limit
-      });
+      };
+
+      if (query) {
+        return this.vacanciesRepository.find({
+          ...commonOptions,
+          where: whereConditions
+        });
+      }
+
+      return this.vacanciesRepository.find(commonOptions);
 
     } catch (error) {
       throw new HttpException(
