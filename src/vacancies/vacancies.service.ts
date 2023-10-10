@@ -2,12 +2,12 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { Vacancy } from '../database/entities/vacancies.entity';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from '../database/entities/company.entity';
-import { User } from '../database/entities/user.entity';
+import { User } from 'src/database/entities/user.entity';
+import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 import { Technology } from '../database/entities/technology.entity';
-
 
 @Injectable()
 export class VacanciesService {
@@ -65,12 +65,35 @@ export class VacanciesService {
     }
   }
 
-  async findAll() {
+  async findAll(query?: QueryVacancyDTO): Promise<Vacancy[]> {
     try {
-      const vacanciesList = await this.vacanciesRepository.find({
+      let technologiesArray = query.technologies
+
+      if (typeof query.technologies === 'string') {
+        technologiesArray = [query.technologies]
+      }
+
+      const whereConditions = {};
+
+      for (const key in query) {
+        if (query[key]) {
+          whereConditions[key] = Like(`%${query[key]}%`);
+        }
+        if (query.technologies) {
+          whereConditions['technologies'] = { tecName: In(technologiesArray) };
+        }
+      }
+
+      if (query) {
+        return this.vacanciesRepository.find({
+          where: whereConditions,
+          relations: ['company', 'advertiser', 'technologies'],
+        });
+      }
+
+      return this.vacanciesRepository.find({
         relations: ['company', 'advertiser', 'technologies'],
       });
-      return vacanciesList;
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
@@ -78,7 +101,7 @@ export class VacanciesService {
       );
     }
   }
-
+  
   async findById(id: string) {
     try {
       const vacancy = await this.vacanciesRepository.findOne({
