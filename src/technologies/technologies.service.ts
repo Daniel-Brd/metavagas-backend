@@ -3,7 +3,7 @@ import { CreateTechnologyDto } from './dto/create-technology.dto';
 import { UpdateTechnologyDto } from './dto/update-technology.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Technology } from '../database/entities/technology.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class TechnologiesService {
@@ -29,10 +29,45 @@ export class TechnologiesService {
     }
   }
 
-  async findAll() {
+  async findAll(tempTecNames?: string[]) {
     try {
-      const technologyList = await this.technologiesRepository.find();
-      return technologyList;
+      let tecNames = tempTecNames;
+
+      if (typeof tempTecNames === 'string') {
+        tecNames = [tempTecNames];
+      }
+
+      if (!tecNames) {
+        return this.technologiesRepository.find();
+      } else {
+        let technologies = [];
+
+        for (let i = 0; i < tecNames.length; i++) {
+          const technology = await this.findByName(tecNames[i]);
+          technologies.push(technology);
+        }
+
+        return technologies;
+      }
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error',
+        error.status || 500,
+      );
+    }
+  }
+
+  async findByName(tecName: string) {
+    try {
+      const technology = await this.technologiesRepository.findOneBy({
+        tecName,
+      });
+
+      if (!technology) {
+        throw new HttpException(`technology '${tecName}' was not found`, 404);
+      }
+
+      return technology;
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error',
