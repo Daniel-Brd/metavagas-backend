@@ -8,8 +8,6 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'chai-friendly', 'no-only-tests'],
   extends: [
-    // 'react-app', // error: ESLint couldn't determine the plugin "@typescript-eslint" uniquely.
-    'react-app/jest',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
