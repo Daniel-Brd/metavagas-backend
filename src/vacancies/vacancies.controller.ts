@@ -50,9 +50,10 @@ export class VacanciesController {
   @ApiResponse({ status: 200, description: 'List of all vacancies' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   findAll(
-  @Query('page') page = 1,
-  @Query('limit') limit = 5,
-  @Query() query?: QueryVacancyDTO): Promise<Vacancy[]> {
+    @Query('page') page = 1,
+    @Query('limit') limit = 5,
+    @Query() query?: QueryVacancyDTO,
+  ): Promise<Vacancy[]> {
     return this.vacanciesService.findAll(page, limit, query);
   }
 
