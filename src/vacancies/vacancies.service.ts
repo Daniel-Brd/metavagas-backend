@@ -36,8 +36,10 @@ export class VacanciesService {
 
       const advertiser = await this.usersService.findById(currentUser.userId);
 
-      const technologiesArray = await this.technologiesService.findAll(
-        technologies,
+      const technologiesArray = await Promise.all(
+        technologies.map(async tech => {
+          return this.technologiesService.findByName(tech);
+        }),
       );
 
       const tempVacancies = this.vacanciesRepository.create({
@@ -133,28 +135,42 @@ export class VacanciesService {
 
   async update(id: string, updateVacancyDto: UpdateVacancyDto) {
     try {
-      const vacancy = await this.vacanciesRepository.findOneBy({ id });
+      const vacancy = await this.vacanciesRepository.findOne({
+        where: { id },
+        relations: ['technologies'],
+      });
+
       if (!vacancy) {
         throw new HttpException('Vacancy not found.', 404);
       }
 
-      const technologiesArray = await this.technologiesService.findAll(
-        updateVacancyDto.technologies,
-      );
+      let technologiesArray = vacancy.technologies;
 
-      const tempAffected = this.vacanciesRepository.create({
+      if (updateVacancyDto.technologies) {
+        vacancy.technologies = [];
+
+        technologiesArray = await Promise.all(
+          updateVacancyDto.technologies?.map(async techName => {
+            return this.technologiesService.findByName(techName);
+          }),
+        );
+      }
+
+      const tempAffected = this.vacanciesRepository.merge(vacancy, {
         ...updateVacancyDto,
         technologies: technologiesArray,
       });
-      const affected = await this.vacanciesRepository.update(
-        { id },
-        tempAffected,
-      );
+
+      const affected = await this.vacanciesRepository.save(tempAffected);
+
       if (!affected) {
         throw new HttpException('Something went wrong with update.', 400);
       }
 
-      return this.vacanciesRepository.findOneBy({ id });
+      return this.vacanciesRepository.findOne({
+        where: { id },
+        relations: ['technologies'],
+      });
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
