@@ -40,13 +40,9 @@ export class TechnologiesService {
       if (!tecNames) {
         return this.technologiesRepository.find();
       } else {
-        const technologies = [];
-
-        for (let i = 0; i < tecNames.length; i++) {
-          const technology = await this.findByName(tecNames[i]);
-          technologies.push(technology);
-        }
-
+        const technologies = await Promise.all(
+          tecNames.map(tecName => this.findByName(tecName)),
+        );
         return technologies;
       }
     } catch (error) {
