@@ -1,4 +1,4 @@
-import { LoginDto } from "../../../auth/dto/login.dto"
+import { LoginDto } from '../../../auth/dto/login.dto';
 
 export const loginMock: LoginDto = {
   email: 'test@gmail.com',

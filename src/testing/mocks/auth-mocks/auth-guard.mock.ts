@@ -1,5 +1,5 @@
-import { CanActivate } from "@nestjs/common";
+import { CanActivate } from '@nestjs/common';
 
 export const authGuardMock: CanActivate = {
-  canActivate: jest.fn(() => true)
-}
+  canActivate: jest.fn(() => true),
+};

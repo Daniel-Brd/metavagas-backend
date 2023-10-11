@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async register(payload: CreateUserDto) {
     try {
@@ -37,11 +37,15 @@ export class AuthService {
     try {
       const user = await this.usersService.findByEmail(payload.email);
 
+      if (!user) {
+        throw new HttpException('invalid email or password.', 401);
+      }
+
       const { id, name, email, password, role, isActive, vacancies } = user;
 
       const isPasswordValid = await bcrypt.compare(payload.password, password);
 
-      if (!user || !isPasswordValid) {
+      if (!isPasswordValid) {
         throw new HttpException('invalid email or password.', 401);
       }
 
@@ -51,7 +55,7 @@ export class AuthService {
         userRole: role,
         isActive,
         userEmail: email,
-        vacancies
+        vacancies,
       };
 
       return {

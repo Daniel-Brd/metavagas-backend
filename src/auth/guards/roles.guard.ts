@@ -1,44 +1,52 @@
-import { Injectable, CanActivate, ExecutionContext, HttpException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RoleEnum } from '../../enums/role.enum';
-import { ROLES_KEY } from '../../utils/constants';
+import { PERMISSION_KEY, ROLES_KEY } from '../../utils/constants';
+import { PermissionEnum } from '../../enums/permission.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) { }
+  constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-
-    const { user, params } = context.switchToHttp().getRequest()
+    const {
+      user,
+      params: { id: targetId },
+    } = context.switchToHttp().getRequest();
 
     const requiredRoles = this.reflector.getAllAndOverride<RoleEnum[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 
-    let isSelfPermission = this.reflector.getAllAndOverride(
-      'selfPermission',
-      [context.getHandler(), context.getClass()]
-    )
-
-    isSelfPermission ? isSelfPermission = Object.values(isSelfPermission)[0] : false
-
-    const isOwner = user.vacancies.find(({ id }) => id === params.id)
+    const permissions = this.reflector.getAllAndOverride<PermissionEnum[]>(
+      PERMISSION_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     if (!requiredRoles) {
       return true;
     }
 
-    if (isSelfPermission && params.id === user.userId) {
-      return true
+    const isSelf = targetId === user.userId;
+
+    if (permissions?.includes(PermissionEnum.self) && isSelf) {
+      return true;
     }
 
-    if (isOwner) {
-      return true
+    const isOwner = user.vacancies.find(({ id }) => id === targetId);
+
+    if (permissions?.includes(PermissionEnum.owner) && isOwner) {
+      return true;
     }
 
     if (requiredRoles.some(role => user.userRole?.includes(role))) {
-      return true
+      return true;
     }
 
     throw new HttpException('You do not have permission to this action.', 401);

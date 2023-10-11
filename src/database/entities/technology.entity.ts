@@ -12,6 +12,6 @@ export class Technology {
   @Column({ type: 'varchar', length: 64, nullable: false })
   creatorsName: string;
 
-  @ManyToMany(() => Vacancy, (vacancy) => vacancy.technologies)
-  vacancies: Vacancy[]
+  @ManyToMany(() => Vacancy, vacancy => vacancy.technologies)
+  vacancies: Vacancy[];
 }
