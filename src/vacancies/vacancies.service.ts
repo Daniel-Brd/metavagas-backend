@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { Vacancy } from '../database/entities/vacancies.entity';
-import { In, Like, Repository } from 'typeorm';
+import { Between, In, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 import { UsersService } from '../users/users.service';
@@ -79,25 +79,39 @@ export class VacanciesService {
 
       if (query) {
         let technologiesArray = query.technologies;
+        let vacancyTypesArray = query.vacancyTypes;
 
         if (typeof query.technologies === 'string') {
           technologiesArray = [query.technologies];
         }
 
-        for (let i = 0; i < technologiesArray?.length; i++) {
-          await this.technologiesService.findByName(technologiesArray[i]);
+        if (typeof query.vacancyTypes === 'string') {
+          vacancyTypesArray = [query.vacancyTypes];
         }
+
+        technologiesArray?.forEach(async techName => {
+          await this.technologiesService.findByName(techName);
+        });
 
         const whereConditions = {};
 
         for (const key in query) {
-          if (query[key]) {
+          if (key === 'location' || key === 'role') {
             whereConditions[key] = Like(`%${query[key]}%`);
           }
-          if (query.technologies) {
+          if (key === 'technologies') {
             whereConditions['technologies'] = {
               tecName: In(technologiesArray),
             };
+          }
+          if (key === 'vacancyTypes') {
+            whereConditions['vacancyType'] = In(vacancyTypesArray);
+          }
+          if (key === 'minWage' || key === 'maxWage') {
+            whereConditions['wage'] = Between(
+              Number(query.minWage),
+              Number(query.maxWage),
+            );
           }
         }
 
