@@ -41,19 +41,20 @@ export class VacanciesController {
   @ApiResponse({ status: 201, description: 'Vacancy created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request ' })
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
-  create(
-    @Body() createVacancyDto: CreateVacancyDto,
-    @CurrentUser() currentUser: any,
-  ) {
-    return this.vacanciesService.create(createVacancyDto, currentUser);
+  create(@Body() payload: CreateVacancyDto, @CurrentUser() currentUser: any) {
+    return this.vacanciesService.create(payload, currentUser);
   }
 
   @Get()
   @ApiOperation({ summary: 'Search all registered vacancies' })
   @ApiResponse({ status: 200, description: 'List of all vacancies' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  findAll(@Query() query?: QueryVacancyDTO): Promise<Vacancy[]> {
-    return this.vacanciesService.findAll(query);
+  findAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 5,
+    @Query() query?: QueryVacancyDTO,
+  ): Promise<Vacancy[]> {
+    return this.vacanciesService.findAll(page, limit, query);
   }
 
   @Get(':id')

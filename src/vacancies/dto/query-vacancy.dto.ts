@@ -1,7 +1,8 @@
 export class QueryVacancyDTO {
-  technologies?: string[];
-  vacancyRole?: string;
-  wage?: number;
-  vacancyType?: string;
   location?: string;
+  role?: string;
+  technologies?: string[];
+  vacancyTypes?: string[];
+  minWage?: string;
+  maxWage?: string;
 }

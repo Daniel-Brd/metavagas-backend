@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateVacancyDto {
   @ApiProperty({ type: String, example: 'Software Developer' })
@@ -41,7 +41,8 @@ export class CreateVacancyDto {
   @IsString()
   companyName: string;
 
+  @ApiProperty({ type: String, example: 'React.js' })
   @IsNotEmpty()
-  @IsString()
+  @IsArray()
   technologies: string[];
 }

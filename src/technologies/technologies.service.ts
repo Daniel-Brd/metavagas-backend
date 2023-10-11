@@ -29,10 +29,41 @@ export class TechnologiesService {
     }
   }
 
-  async findAll() {
+  async findAll(tempTecNames?: string[]) {
     try {
-      const technologyList = await this.technologiesRepository.find();
-      return technologyList;
+      let tecNames = tempTecNames;
+
+      if (typeof tempTecNames === 'string') {
+        tecNames = [tempTecNames];
+      }
+
+      if (!tecNames) {
+        return this.technologiesRepository.find();
+      } else {
+        const technologies = await Promise.all(
+          tecNames.map(tecName => this.findByName(tecName)),
+        );
+        return technologies;
+      }
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error',
+        error.status || 500,
+      );
+    }
+  }
+
+  async findByName(tecName: string) {
+    try {
+      const technology = await this.technologiesRepository.findOneBy({
+        tecName,
+      });
+
+      if (!technology) {
+        throw new HttpException(`technology '${tecName}' was not found`, 404);
+      }
+
+      return technology;
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error',
