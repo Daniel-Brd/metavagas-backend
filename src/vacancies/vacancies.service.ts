@@ -96,8 +96,11 @@ export class VacanciesService {
         const whereConditions = {};
 
         for (const key in query) {
-          if (key === 'location' || key === 'role') {
+          if (key === 'location') {
             whereConditions[key] = Like(`%${query[key]}%`);
+          }
+          if (key === 'role') {
+            whereConditions['vacancyRole'] = Like(`%${query[key]}%`);
           }
           if (key === 'technologies') {
             whereConditions['technologies'] = {
