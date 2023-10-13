@@ -43,13 +43,13 @@ describe('TechnologiesService', () => {
 
       it('Should throw a 404 HttpException when technology is not found', async () => {
         jest.spyOn(service['technologiesRepository'], 'findOneBy').mockResolvedValue(null);
-        const nonexistentId = 'some-nonexistent-id';
+        const nonexistentId = '1234abcd-a01b-1234-5678-1ab2c34d56e7-a123d';
         await expectError(() => service.findById(nonexistentId), 'Technology not found', 404);
       });
 
       it('Should throw a 500 HttpException on unexpected error', async () => {
         jest.spyOn(service['technologiesRepository'], 'findOneBy').mockRejectedValue(new Error('Unexpected error'));
-        await expectError(() => service.findById('some-id'), 'Unexpected error', 500);
+        await expectError(() => service.findById('1234abcd-a01b-1234-5678-1ab2c34d56e7'), 'Unexpected error', 500);
       });
     });
 
@@ -86,7 +86,7 @@ describe('TechnologiesService', () => {
 
       it('Should throw a 404 HttpException when technology is not found by name', async () => {
         jest.spyOn(service['technologiesRepository'], 'findOneBy').mockResolvedValue(null);
-        await expectError(() => service.findByName('some-nonexistent-name'), `technology 'some-nonexistent-name' was not found`,404);
+        await expectError(() => service.findByName('example'), `technology 'example' was not found`,404);
       });
 
       it('Should throw a 500 HttpException on unexpected error during findByName', async () => {
@@ -138,7 +138,7 @@ describe('TechnologiesService', () => {
         jest.spyOn(service['technologiesRepository'], 'findOne')
           .mockResolvedValue(undefined);
 
-        await expect(service.remove('someInvalidId'))
+        await expect(service.remove('1234abcd-a01b-1234-5678-1ab2c34d56e7asdqwe'))
           .rejects.toThrow(new HttpException('Unexpected error', 500));
       });
     });
