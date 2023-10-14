@@ -1,10 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Between, In, Like, Repository } from 'typeorm';
+
+// import { read } from 'xlsx';
+import * as XLSX from 'xlsx';
+
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
-import { Vacancy } from '../database/entities/vacancies.entity';
-import { Between, In, Like, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { QueryVacancyDTO } from './dto/query-vacancy.dto';
+
+import { Vacancy } from '../database/entities/vacancies.entity';
 import { UsersService } from '../users/users.service';
 import { TechnologiesService } from '../technologies/technologies.service';
 import { CompaniesService } from '../companies/companies.service';
@@ -57,6 +62,39 @@ export class VacanciesService {
       const vacancies = await this.vacanciesRepository.save(tempVacancies);
 
       return vacancies;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.statusCode || 500,
+      );
+    }
+  }
+
+  async uploadSpreadsheets(spreadsheet: Express.Multer.File, currentUser: any) {
+    try {
+      const workbook = XLSX.read(spreadsheet.buffer);
+
+      const result = await Promise.all(
+        workbook.SheetNames.map(async sheetName => {
+          const worksheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(worksheet) as any[];
+
+          const createVacancyPromises = rows.map(async row => {
+            const technologies = row.technologies.split(',');
+            const vacancyData = { ...row, technologies };
+            return this.create(vacancyData, currentUser);
+          });
+
+          const createdVacancies = await Promise.all(createVacancyPromises);
+
+          return {
+            sheetName,
+            vacancies: createdVacancies,
+          };
+        }),
+      );
+
+      return result;
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
