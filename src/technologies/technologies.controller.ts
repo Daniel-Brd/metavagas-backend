@@ -36,7 +36,6 @@ export class TechnologiesController {
   }
 
   @Get()
-  @Auth()
   @ApiOperation({ summary: 'Search all registered technologies' })
   @ApiResponse({ status: 200, description: 'Lists of all technologies' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
