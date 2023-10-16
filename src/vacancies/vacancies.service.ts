@@ -118,6 +118,9 @@ export class VacanciesService {
         const whereConditions = {};
 
         for (const key in query) {
+          if (key === 'description') {
+            whereConditions['vacancyDescription'] = ILike(`%${query[key]}%`);
+          }
           if (key === 'location') {
             whereConditions[key] = ILike(`%${query[key]}%`);
           }

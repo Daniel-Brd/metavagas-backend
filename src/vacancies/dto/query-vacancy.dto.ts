@@ -1,4 +1,5 @@
 export class QueryVacancyDTO {
+  description?: string;
   location?: string;
   role?: string;
   technologies?: string[];
