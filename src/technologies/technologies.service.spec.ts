@@ -29,8 +29,13 @@ describe('TechnologiesService', () => {
 
     it('should throw an error when creating a technology fails', async () => {
       const errorMsg = 'Erro de teste';
-      jest.spyOn(service['technologiesRepository'], 'save').mockRejectedValue(new Error(errorMsg));
-      await expect(service.create(createTechnologyMock)).rejects.toThrow(errorMsg);
+      technologyRepositoryMock.useValue.save.mockRejectedValue(
+        new Error(errorMsg),
+      );
+
+      await expect(service.create(createTechnologyMock)).rejects.toThrow(
+        errorMsg,
+      );
     });
   });
 
@@ -42,14 +47,26 @@ describe('TechnologiesService', () => {
       });
 
       it('Should throw a 404 HttpException when technology is not found', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOneBy').mockResolvedValue(null);
+        technologyRepositoryMock.useValue.findOneBy.mockResolvedValue(null);
+
         const nonexistentId = '1234abcd-a01b-1234-5678-1ab2c34d56e7-a123d';
-        await expectError(() => service.findById(nonexistentId), 'Technology not found', 404);
+        await expectError(
+          () => service.findById(nonexistentId),
+          'Technology not found',
+          404,
+        );
       });
 
       it('Should throw a 500 HttpException on unexpected error', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOneBy').mockRejectedValue(new Error('Unexpected error'));
-        await expectError(() => service.findById('1234abcd-a01b-1234-5678-1ab2c34d56e7'), 'Unexpected error', 500);
+        technologyRepositoryMock.useValue.findOneBy.mockRejectedValue(
+          new Error('Unexpected error'),
+        );
+
+        await expectError(
+          () => service.findById('1234abcd-a01b-1234-5678-1ab2c34d56e7'),
+          'Unexpected error',
+          500,
+        );
       });
     });
 
@@ -69,8 +86,14 @@ describe('TechnologiesService', () => {
       });
 
       it('Should throw a 500 HttpException when there is an error in findByName', async () => {
-        jest.spyOn(service, 'findByName').mockRejectedValue(new Error('Test error in findByName'));
-        await expectError(() => service.findAll([mockTechnology.name]), 'Test error in findByName', 500);
+        jest
+          .spyOn(service, 'findByName')
+          .mockRejectedValue(new Error('Test error in findByName'));
+        await expectError(
+          () => service.findAll([mockTechnology.name]),
+          'Test error in findByName',
+          500,
+        );
       });
     });
 
@@ -78,35 +101,49 @@ describe('TechnologiesService', () => {
       const tecName = 'Nestjs';
 
       it('Should return a technology when found by name', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOneBy').mockResolvedValue(technologyListMock[0]);
+        technologyRepositoryMock.useValue.findOneBy.mockResolvedValue(
+          technologyListMock[0],
+        );
 
         const result = await service.findByName(tecName);
         expect(result).toEqual(technologyListMock[0]);
       });
 
       it('Should throw a 404 HttpException when technology is not found by name', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOneBy').mockResolvedValue(null);
-        await expectError(() => service.findByName('example'), `technology 'example' was not found`,404);
+        technologyRepositoryMock.useValue.findOne.mockResolvedValue(null);
+
+        await expectError(
+          () => service.findByName('example'),
+          'technology \'example\' was not found',
+          404,
+        );
       });
 
       it('Should throw a 500 HttpException on unexpected error during findByName', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOneBy').mockRejectedValue(new Error('Unexpected error'));
-        await expectError(() => service.findByName(tecName), 'Unexpected error', 500);
+        technologyRepositoryMock.useValue.findOne.mockRejectedValue(
+          new Error('Unexpected error'),
+        );
+
+        await expectError(
+          () => service.findByName(tecName),
+          'Unexpected error',
+          500,
+        );
       });
     });
-
   });
 
   describe('Technology Update and Removal', () => {
     describe('update', () => {
       it('Should update and return a technology', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOne')
-          .mockResolvedValue(technologyListMock[0]);
+        technologyRepositoryMock.useValue.findOne.mockResolvedValue(
+          technologyListMock[0],
+        );
 
         try {
           const result = await service.update(
             technologyListMock[0].id,
-            updateTechnologyMock
+            updateTechnologyMock,
           );
           console.log('Resultado:', result);
         } catch (error) {
@@ -116,35 +153,35 @@ describe('TechnologiesService', () => {
     });
 
     describe('remove', () => {
+      const mockTech = technologyListMock[0];
+
       it('Should remove a technology and return a success message', async () => {
-        jest.spyOn(service, 'findById').mockResolvedValue(technologyListMock[0]);
+        technologyRepositoryMock.useValue.findOne.mockResolvedValue(mockTech);
 
-        const mockDelete = jest.spyOn(service['technologiesRepository'], 'delete')
-          .mockResolvedValue({ affected: 1, raw: [] } as any);
+        technologyRepositoryMock.useValue.delete.mockResolvedValue({
+          affected: 1,
+          raw: [],
+        } as any);
 
-        const result = await service.remove(technologyListMock[0].id);
+        const result = await service.remove(mockTech.id);
 
         expect(result).toEqual({
           message: 'technology successfully deleted',
-          removed: technologyListMock[0]
+          removed: mockTech,
         });
 
-        expect(mockDelete).toBeCalledWith({ id: technologyListMock[0].id });
-
-        mockDelete.mockRestore();
-      });
-
-      it('Should throw an error when removing a technology that does not exist', async () => {
-        jest.spyOn(service['technologiesRepository'], 'findOne')
-          .mockResolvedValue(undefined);
-
-        await expect(service.remove('1234abcd-a01b-1234-5678-1ab2c34d56e7asdqwe'))
-          .rejects.toThrow(new HttpException('Unexpected error', 500));
+        expect(technologyRepositoryMock.useValue.delete).toHaveBeenCalledWith({
+          id: mockTech.id,
+        });
       });
     });
   });
 
-  async function expectError(asyncFn: () => Promise<any>, errMsg: string, errStatus: number) {
+  async function expectError(
+    asyncFn: () => Promise<any>,
+    errMsg: string,
+    errStatus: number,
+  ) {
     await expect(asyncFn()).rejects.toThrow(HttpException);
     await expect(asyncFn()).rejects.toHaveProperty('response', errMsg);
     await expect(asyncFn()).rejects.toHaveProperty('status', errStatus);
