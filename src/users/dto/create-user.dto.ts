@@ -9,7 +9,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { RoleEnum } from '../../enums/role.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @ApiProperty({ type: String, example: 'John Doe' })
@@ -18,26 +18,26 @@ export class CreateUserDto {
   @MaxLength(64)
   name: string;
 
-  @ApiProperty({ type: String, example: 'JognDoe.dev@gmail.com' })
+  @ApiProperty({ type: String, example: 'JohnDoe@gmail.com' })
   @IsNotEmpty()
   @IsString()
   @IsEmail()
   @MaxLength(100)
   email: string;
 
-  @ApiProperty({ type: String, example: 'JognDoe@2023' })
+  @ApiProperty({ type: String, example: 'password@123' })
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
   @MaxLength(64)
   password: string;
 
-  @ApiProperty({ enum: ['admin', 'advertiser', 'candidate'] })
+  @ApiPropertyOptional({ enum: ['admin', 'advertiser', 'candidate'] })
   @IsOptional()
   @IsEnum(RoleEnum)
   role?: RoleEnum;
 
-  @ApiProperty({ type: Boolean, example: true })
+  @ApiPropertyOptional({ type: Boolean })
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
