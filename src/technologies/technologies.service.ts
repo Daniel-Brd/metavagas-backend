@@ -3,7 +3,7 @@ import { CreateTechnologyDto } from './dto/create-technology.dto';
 import { UpdateTechnologyDto } from './dto/update-technology.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Technology } from '../database/entities/technology.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 @Injectable()
 export class TechnologiesService {
@@ -55,8 +55,8 @@ export class TechnologiesService {
 
   async findByName(tecName: string) {
     try {
-      const technology = await this.technologiesRepository.findOneBy({
-        tecName,
+      const technology = await this.technologiesRepository.findOne({
+        where: { tecName: ILike(`%${tecName}%`) },
       });
 
       if (!technology) {

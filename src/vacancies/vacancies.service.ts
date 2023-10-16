@@ -1,8 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, In, Like, Repository } from 'typeorm';
+import { Between, In, ILike, Repository } from 'typeorm';
 
-// import { read } from 'xlsx';
 import * as XLSX from 'xlsx';
 
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
@@ -116,37 +115,38 @@ export class VacanciesService {
       };
 
       if (query) {
-        let technologiesArray = query.technologies;
-        let vacancyTypesArray = query.vacancyTypes;
-
-        if (typeof query.technologies === 'string') {
-          technologiesArray = [query.technologies];
-        }
-
-        if (typeof query.vacancyTypes === 'string') {
-          vacancyTypesArray = [query.vacancyTypes];
-        }
-
-        technologiesArray?.forEach(async techName => {
-          await this.technologiesService.findByName(techName);
-        });
-
         const whereConditions = {};
 
         for (const key in query) {
           if (key === 'location') {
-            whereConditions[key] = Like(`%${query[key]}%`);
+            whereConditions[key] = ILike(`%${query[key]}%`);
           }
           if (key === 'role') {
-            whereConditions['vacancyRole'] = Like(`%${query[key]}%`);
+            whereConditions['vacancyRole'] = ILike(`%${query[key]}%`);
           }
           if (key === 'technologies') {
+            let queryTechologies = query.technologies;
+
+            if (typeof query.technologies === 'string') {
+              queryTechologies = [query.technologies];
+            }
+
+            const technologies = await this.technologiesService.findAll(
+              queryTechologies,
+            );
+
             whereConditions['technologies'] = {
-              tecName: In(technologiesArray),
+              tecName: In(technologies.map(tech => tech.tecName)),
             };
           }
           if (key === 'vacancyTypes') {
-            whereConditions['vacancyType'] = In(vacancyTypesArray);
+            let queryVacancyTypes = query.vacancyTypes;
+
+            if (typeof query.vacancyTypes === 'string') {
+              queryVacancyTypes = [query.vacancyTypes];
+            }
+
+            whereConditions['vacancyType'] = In(queryVacancyTypes);
           }
           if (key === 'minWage' || key === 'maxWage') {
             whereConditions['wage'] = Between(
