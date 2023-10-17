@@ -7,6 +7,10 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -14,17 +18,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
+import { Vacancy } from '../database/entities/vacancies.entity';
 import { VacanciesService } from './vacancies.service';
+import { UsersService } from '../users/users.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
+import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 import { CurrentUser } from '../decorators/user.decorator';
 import { Auth } from '../decorators/auth.decorator';
-import { UsersService } from '../users/users.service';
 import { RoleEnum } from '../enums/role.enum';
 import { PermissionEnum } from '../enums/permission.enum';
-import { Vacancy } from '../database/entities/vacancies.entity';
-import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 
 @ApiTags('vacancies')
 @ApiBearerAuth('JWT-auth')
@@ -43,6 +48,26 @@ export class VacanciesController {
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
   create(@Body() payload: CreateVacancyDto, @CurrentUser() currentUser: any) {
     return this.vacanciesService.create(payload, currentUser);
+  }
+
+  @Post('upload')
+  @Auth([RoleEnum.advertiser])
+  @UseInterceptors(FileInterceptor('file'))
+  uploadSpreadsheets(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.vacanciesService.uploadSpreadsheets(file, currentUser);
   }
 
   @Get()

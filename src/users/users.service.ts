@@ -31,6 +31,10 @@ export class UsersService {
     try {
       const userList = await this.usersRepository.find();
 
+      if (!userList) {
+        throw new HttpException('Users not found.', 404);
+      }
+
       return userList;
     } catch (error) {
       throw new HttpException(
@@ -88,6 +92,11 @@ export class UsersService {
         where: { id },
         relations: ['vacancies'],
       });
+
+      if (!profile) {
+        throw new HttpException('Profile not found.', 404);
+      }
+
       return profile;
     } catch (error) {
       throw new HttpException(
