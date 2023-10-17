@@ -40,6 +40,38 @@ describe('UsersController', () => {
 
         expect(result).toEqual(usersListMock);
       });
+
+      it('Should return an error if the users is not found', async () => {
+        (usersServiceMock.useValue.findAll as jest.Mock).mockResolvedValue(
+          new HttpException('Users not found.', 404),
+        );
+
+        const result = await controller.findAll();
+
+        expect(result).toEqual(new HttpException('Users not found.', 404));
+        expect(result).toBeInstanceOf(HttpException);
+      });
+    });
+
+    describe('findProfile', () => {
+      it('Should return an user profile', async () => {
+        const result = await controller.findProfile(usersListMock[0].id);
+
+        expect(result).toEqual(userProfileMock);
+      });
+
+      it('Should return an error if the profile is not found', async () => {
+        (usersServiceMock.useValue.findProfile as jest.Mock).mockResolvedValue(
+          new HttpException('Profile not found.', 404),
+        );
+
+        const result = await controller.findProfile(
+          '1234abcd-a01b-1234-5678-1ab2c34d56e7',
+        );
+
+        expect(result).toEqual(new HttpException('Profile not found.', 404));
+        expect(result).toBeInstanceOf(HttpException);
+      });
     });
 
     describe('findById', () => {
@@ -62,14 +94,6 @@ describe('UsersController', () => {
         expect(result).toBeInstanceOf(HttpException);
       });
     });
-
-    describe('findProfile', () => {
-      it('Should return an user profile', async () => {
-        const result = await controller.findProfile(usersListMock[0].id);
-
-        expect(result).toEqual(userProfileMock);
-      });
-    });
   });
 
   describe('Update', () => {
@@ -83,6 +107,36 @@ describe('UsersController', () => {
         expect(result).toEqual({ ...usersListMock[0], ...updateUserMock });
       });
     });
+
+    it('Should return an error if the user is not found', async () => {
+      (usersServiceMock.useValue.update as jest.Mock).mockResolvedValue(
+        new HttpException('User not found.', 404),
+      );
+
+      const result = await controller.update(
+        '1234abcd-a01b-1234-5678-1ab2c34d56e7',
+        updateUserMock,
+      );
+
+      expect(result).toEqual(new HttpException('User not found.', 404));
+      expect(result).toBeInstanceOf(HttpException);
+    });
+
+    it('Should return an error if something went wrong with update', async () => {
+      (usersServiceMock.useValue.update as jest.Mock).mockResolvedValue(
+        new HttpException('Something went wrong with update.', 400),
+      );
+
+      const result = await controller.update(
+        usersListMock[0].id,
+        updateUserMock,
+      );
+
+      expect(result).toEqual(
+        new HttpException('Something went wrong with update.', 400),
+      );
+      expect(result).toBeInstanceOf(HttpException);
+    });
   });
 
   describe('Delete', () => {
@@ -91,6 +145,32 @@ describe('UsersController', () => {
         const result = await controller.softDelete(usersListMock[0].id);
 
         expect(result).toEqual({ ...usersListMock[0], isActive: false });
+      });
+
+      it('Should return an error if the user is not found', async () => {
+        (usersServiceMock.useValue.softDelete as jest.Mock).mockResolvedValue(
+          new HttpException('User not found.', 404),
+        );
+
+        const result = await controller.softDelete(
+          '1234abcd-a01b-1234-5678-1ab2c34d56e7',
+        );
+
+        expect(result).toEqual(new HttpException('User not found.', 404));
+        expect(result).toBeInstanceOf(HttpException);
+      });
+
+      it('Should return an error if something went wrong with soft delete', async () => {
+        (usersServiceMock.useValue.softDelete as jest.Mock).mockResolvedValue(
+          new HttpException('Something went wrong with delete.', 400),
+        );
+
+        const result = await controller.softDelete(usersListMock[0].id);
+
+        expect(result).toEqual(
+          new HttpException('Something went wrong with delete.', 400),
+        );
+        expect(result).toBeInstanceOf(HttpException);
       });
     });
   });
