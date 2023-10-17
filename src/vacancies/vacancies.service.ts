@@ -1,10 +1,14 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Between, In, ILike, Repository } from 'typeorm';
+
+import * as XLSX from 'xlsx';
+
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
-import { Vacancy } from '../database/entities/vacancies.entity';
-import { Between, In, Like, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { QueryVacancyDTO } from './dto/query-vacancy.dto';
+
+import { Vacancy } from '../database/entities/vacancies.entity';
 import { UsersService } from '../users/users.service';
 import { TechnologiesService } from '../technologies/technologies.service';
 import { CompaniesService } from '../companies/companies.service';
@@ -65,6 +69,39 @@ export class VacanciesService {
     }
   }
 
+  async uploadSpreadsheets(spreadsheet: Express.Multer.File, currentUser: any) {
+    try {
+      const workbook = XLSX.read(spreadsheet.buffer);
+
+      const result = await Promise.all(
+        workbook.SheetNames.map(async sheetName => {
+          const worksheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(worksheet) as any[];
+
+          const createVacancyPromises = rows.map(async row => {
+            const technologies = row.technologies.split(',');
+            const vacancyData = { ...row, technologies };
+            return this.create(vacancyData, currentUser);
+          });
+
+          const createdVacancies = await Promise.all(createVacancyPromises);
+
+          return {
+            sheetName,
+            vacancies: createdVacancies,
+          };
+        }),
+      );
+
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.statusCode || 500,
+      );
+    }
+  }
+
   async findAll(
     page: number,
     limit: number,
@@ -78,37 +115,41 @@ export class VacanciesService {
       };
 
       if (query) {
-        let technologiesArray = query.technologies;
-        let vacancyTypesArray = query.vacancyTypes;
-
-        if (typeof query.technologies === 'string') {
-          technologiesArray = [query.technologies];
-        }
-
-        if (typeof query.vacancyTypes === 'string') {
-          vacancyTypesArray = [query.vacancyTypes];
-        }
-
-        technologiesArray?.forEach(async techName => {
-          await this.technologiesService.findByName(techName);
-        });
-
         const whereConditions = {};
 
         for (const key in query) {
+          if (key === 'description') {
+            whereConditions['vacancyDescription'] = ILike(`%${query[key]}%`);
+          }
           if (key === 'location') {
-            whereConditions[key] = Like(`%${query[key]}%`);
+            whereConditions[key] = ILike(`%${query[key]}%`);
           }
           if (key === 'role') {
-            whereConditions['vacancyRole'] = Like(`%${query[key]}%`);
+            whereConditions['vacancyRole'] = ILike(`%${query[key]}%`);
           }
           if (key === 'technologies') {
+            let queryTechologies = query.technologies;
+
+            if (typeof query.technologies === 'string') {
+              queryTechologies = [query.technologies];
+            }
+
+            const technologies = await this.technologiesService.findAll(
+              queryTechologies,
+            );
+
             whereConditions['technologies'] = {
-              tecName: In(technologiesArray),
+              tecName: In(technologies.map(tech => tech.tecName)),
             };
           }
           if (key === 'vacancyTypes') {
-            whereConditions['vacancyType'] = In(vacancyTypesArray);
+            let queryVacancyTypes = query.vacancyTypes;
+
+            if (typeof query.vacancyTypes === 'string') {
+              queryVacancyTypes = [query.vacancyTypes];
+            }
+
+            whereConditions['vacancyType'] = In(queryVacancyTypes);
           }
           if (key === 'minWage' || key === 'maxWage') {
             whereConditions['wage'] = Between(

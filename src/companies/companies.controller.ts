@@ -30,7 +30,6 @@ export class CompaniesController {
   @ApiResponse({
     status: 201,
     description: 'Successfully created a new company',
-    type: CreateCompanyDto,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   create(@Body() createCompanyDto: CreateCompanyDto) {
