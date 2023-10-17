@@ -1,5 +1,5 @@
 import { companyListMock } from './company-list-mock';
-import { CompaniesService } from '../../companies/companies.service';
+import { CompaniesService } from '../../../companies/companies.service';
 
 export const companyServiceyMock = {
   provide: CompaniesService,
