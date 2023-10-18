@@ -128,16 +128,6 @@ describe('UsersService', () => {
         expect(result).toEqual({ ...usersListMock[0], ...updateUserMock });
       });
 
-      // it('Should return an error if the user is not found', async () => {
-      //   const result = async () => {
-      //     return await service.update('1234abcd-a01b-1234-5678-1ab2c34d56e7', updateUserMock);
-      //   };
-
-      //   expect(result()).rejects.toThrow(HttpException);
-      //   expect(result()).rejects.toHaveProperty('status', 404);
-      //   expect(result()).rejects.toHaveProperty('response', 'User not found.');
-      // });
-
       it('Should return an error if something went wrong with update', async () => {
         (userRepositoryMock.useValue.update as jest.Mock).mockResolvedValue(
           null,
@@ -173,16 +163,6 @@ describe('UsersService', () => {
 
         expect(result).toEqual({ ...usersListMock[0], isActive: false });
       });
-
-      // it('Should return an error if the user is not found', async () => {
-      //   const result = async () => {
-      //     return await service.update('1234abcd-a01b-1234-5678-1ab2c34d56e7', updateUserMock);
-      //   };
-
-      //   expect(result()).rejects.toThrow(HttpException);
-      //   expect(result()).rejects.toHaveProperty('status', 404);
-      //   expect(result()).rejects.toHaveProperty('response', 'User not found.');
-      // });
 
       it('Should return an error if something went wrong with soft delete.', async () => {
         (userRepositoryMock.useValue.update as jest.Mock).mockResolvedValue(
