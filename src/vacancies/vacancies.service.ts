@@ -139,7 +139,7 @@ export class VacanciesService {
             );
 
             whereConditions['technologies'] = {
-              tecName: In(technologies.map(tech => tech.tecName)),
+              techName: In(technologies.map(tech => tech.techName)),
             };
           }
           if (key === 'vacancyTypes') {

@@ -98,14 +98,14 @@ describe('TechnologiesService', () => {
     });
 
     describe('findByName', () => {
-      const tecName = 'Nestjs';
+      const techName = 'Nestjs';
 
       it('Should return a technology when found by name', async () => {
         technologyRepositoryMock.useValue.findOneBy.mockResolvedValue(
           technologyListMock[0],
         );
 
-        const result = await service.findByName(tecName);
+        const result = await service.findByName(techName);
         expect(result).toEqual(technologyListMock[0]);
       });
 
@@ -125,7 +125,7 @@ describe('TechnologiesService', () => {
         );
 
         await expectError(
-          () => service.findByName(tecName),
+          () => service.findByName(techName),
           'Unexpected error',
           500,
         );

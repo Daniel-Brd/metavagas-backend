@@ -29,19 +29,19 @@ export class TechnologiesService {
     }
   }
 
-  async findAll(tempTecNames?: string[]) {
+  async findAll(tempTechNames?: string[]) {
     try {
-      let tecNames = tempTecNames;
+      let techNames = tempTechNames;
 
-      if (typeof tempTecNames === 'string') {
-        tecNames = [tempTecNames];
+      if (typeof tempTechNames === 'string') {
+        techNames = [tempTechNames];
       }
 
-      if (!tecNames) {
+      if (!techNames) {
         return this.technologiesRepository.find();
       } else {
         const technologies = await Promise.all(
-          tecNames.map(tecName => this.findByName(tecName)),
+          techNames.map(techName => this.findByName(techName)),
         );
         return technologies;
       }
@@ -53,14 +53,14 @@ export class TechnologiesService {
     }
   }
 
-  async findByName(tecName: string) {
+  async findByName(techName: string) {
     try {
       const technology = await this.technologiesRepository.findOne({
-        where: { tecName: ILike(`%${tecName}%`) },
+        where: { techName: ILike(`%${techName}%`) },
       });
 
       if (!technology) {
-        throw new HttpException(`technology '${tecName}' was not found`, 404);
+        throw new HttpException(`technology '${techName}' was not found`, 404);
       }
 
       return technology;

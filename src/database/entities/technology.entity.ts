@@ -7,7 +7,7 @@ export class Technology {
   id: string;
 
   @Column({ type: 'varchar', length: 64, nullable: false, unique: true })
-  tecName: string;
+  techName: string;
 
   @Column({ type: 'varchar', length: 64, nullable: false })
   creatorsName: string;
