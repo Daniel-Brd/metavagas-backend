@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TechnologiesService } from './technologies.service';
-import { technologyRepositoryMock } from '../testing/mocks/technologies-mocks/technology-repository-mock';
-import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology-mock';
-import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list-mock';
+import { technologyRepositoryMock } from '../testing/mocks/technologies-mocks/technology-repository.mock';
+import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology.mock';
+import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list.mock';
 import { HttpException } from '@nestjs/common';
-import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology-mock';
+import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology.mock';
 
 describe('TechnologiesService', () => {
   let service: TechnologiesService;
@@ -114,7 +114,7 @@ describe('TechnologiesService', () => {
 
         await expectError(
           () => service.findByName('example'),
-          'technology \'example\' was not found',
+          "technology 'example' was not found",
           404,
         );
       });

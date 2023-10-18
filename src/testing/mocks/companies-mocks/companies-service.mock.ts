@@ -1,4 +1,4 @@
-import { companyListMock } from './company-list-mock';
+import { companyListMock } from './companies-list.mock';
 import { CompaniesService } from '../../../companies/companies.service';
 
 export const companyServiceyMock = {

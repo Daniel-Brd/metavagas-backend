@@ -1,6 +1,6 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Company } from '../../../database/entities/company.entity';
-import { companyListMock } from './company-list-mock';
+import { companyListMock } from './companies-list.mock';
 
 export const companyRepositoryMock = {
   provide: getRepositoryToken(Company),
