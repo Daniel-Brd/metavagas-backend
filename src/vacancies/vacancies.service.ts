@@ -200,9 +200,14 @@ export class VacanciesService {
       });
 
       return {
-        id: vacancy.id,
-        companyName: vacancy.company.name,
-        advertiserName: vacancy.advertiser.name,
+        ...vacancy,
+        company: {
+          id: vacancy.company.id,
+          name: vacancy.company.name,
+        },
+        advertiser: {
+          name: vacancy.advertiser.name,
+        },
       };
     } catch (error) {
       throw new HttpException('Vacancy not found.', 404);
