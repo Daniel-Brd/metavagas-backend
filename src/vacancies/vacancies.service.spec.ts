@@ -14,6 +14,8 @@ import { currentUserMock } from '../testing/mocks/users-mocks/current-user.mock'
 import { createVacancyMock } from '../testing/mocks/vacancies-mocks/create-vacancy.mock';
 import { vacanciesListMock } from '../testing/mocks/vacancies-mocks/vacancies-list.mock';
 import { vacanciesRepositoryMock } from '../testing/mocks/vacancies-mocks/vacancies-repository.mock';
+import { spreadsheetMock } from '../testing/mocks/xslx-mocks/spreadsheet.mock';
+import { spreadsheetReturnMock } from '../testing/mocks/xslx-mocks/srpeadsheet-return.mock';
 
 describe('VacanciesService', () => {
   let service: VacanciesService;
@@ -99,12 +101,14 @@ describe('VacanciesService', () => {
     });
   });
 
-  // describe('uploadSpreadsheets', () => {
-  //   it('should create a list of users using a spreadsheet', async () => {
-  //     const result = await service.uploadSpreadsheets(
-  //       spreadsheetMock,
-  //       currentUserMock,
-  //     );
-  //   });
-  // });
+  describe('uploadSpreadsheets', () => {
+    it('should create a list of users using a spreadsheet', async () => {
+      const result = await service.uploadSpreadsheets(
+        await spreadsheetMock,
+        currentUserMock,
+      );
+
+      expect(result).toEqual(spreadsheetReturnMock);
+    });
+  });
 });
