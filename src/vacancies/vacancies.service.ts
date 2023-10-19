@@ -124,7 +124,7 @@ export class VacanciesService {
     page: number,
     limit: number,
     query?: QueryVacancyDTO,
-  ): Promise<Vacancy[]> {
+  ): Promise<{ vacancies: Vacancy[]; count: number }> {
     try {
       const commonOptions = {
         relations: ['company', 'advertiser', 'technologies'],
@@ -132,58 +132,56 @@ export class VacanciesService {
         take: limit,
       };
 
-      if (query) {
-        const whereConditions = {};
+      const whereConditions = {};
 
-        for (const key in query) {
-          if (key === 'description') {
-            whereConditions['vacancyDescription'] = ILike(`%${query[key]}%`);
-          }
-          if (key === 'location') {
-            whereConditions[key] = ILike(`%${query[key]}%`);
-          }
-          if (key === 'role') {
-            whereConditions['vacancyRole'] = ILike(`%${query[key]}%`);
-          }
-          if (key === 'technologies') {
-            let queryTechologies = query.technologies;
-
-            if (typeof query.technologies === 'string') {
-              queryTechologies = [query.technologies];
-            }
-
-            const technologies = await this.technologiesService.findAll(
-              queryTechologies,
-            );
-
-            whereConditions['technologies'] = {
-              techName: In(technologies.map(tech => tech.techName)),
-            };
-          }
-          if (key === 'vacancyTypes') {
-            let queryVacancyTypes = query.vacancyTypes;
-
-            if (typeof query.vacancyTypes === 'string') {
-              queryVacancyTypes = [query.vacancyTypes];
-            }
-
-            whereConditions['vacancyType'] = In(queryVacancyTypes);
-          }
-          if (key === 'minWage' || key === 'maxWage') {
-            whereConditions['wage'] = Between(
-              Number(query.minWage),
-              Number(query.maxWage),
-            );
-          }
+      for (const key in query) {
+        if (key === 'description') {
+          whereConditions['vacancyDescription'] = ILike(`%${query[key]}%`);
         }
+        if (key === 'location') {
+          whereConditions[key] = ILike(`%${query[key]}%`);
+        }
+        if (key === 'role') {
+          whereConditions['vacancyRole'] = ILike(`%${query[key]}%`);
+        }
+        if (key === 'technologies') {
+          let queryTechologies = query.technologies;
 
-        return this.vacanciesRepository.find({
-          ...commonOptions,
-          where: whereConditions,
-        });
+          if (typeof query.technologies === 'string') {
+            queryTechologies = [query.technologies];
+          }
+
+          const technologies = await this.technologiesService.findAll(
+            queryTechologies,
+          );
+
+          whereConditions['technologies'] = {
+            techName: In(technologies.map(tech => tech.techName)),
+          };
+        }
+        if (key === 'vacancyTypes') {
+          let queryVacancyTypes = query.vacancyTypes;
+
+          if (typeof query.vacancyTypes === 'string') {
+            queryVacancyTypes = [query.vacancyTypes];
+          }
+
+          whereConditions['vacancyType'] = In(queryVacancyTypes);
+        }
+        if (key === 'minWage' || key === 'maxWage') {
+          whereConditions['wage'] = Between(
+            Number(query.minWage),
+            Number(query.maxWage),
+          );
+        }
       }
 
-      return this.vacanciesRepository.find(commonOptions);
+      const [vacancies, count] = await this.vacanciesRepository.findAndCount({
+        ...commonOptions,
+        where: whereConditions,
+      });
+
+      return { vacancies, count };
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',

@@ -78,7 +78,7 @@ export class VacanciesController {
     @Query('page') page = 1,
     @Query('limit') limit = 5,
     @Query() query?: QueryVacancyDTO,
-  ): Promise<Vacancy[]> {
+  ): Promise<{ vacancies: Vacancy[]; count: number }> {
     return this.vacanciesService.findAll(page, limit, query);
   }
 
