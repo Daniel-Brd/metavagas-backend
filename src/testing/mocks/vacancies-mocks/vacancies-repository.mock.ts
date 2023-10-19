@@ -1,5 +1,5 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Vacancy } from '../../database/entities/vacancies.entity';
+import { Vacancy } from '../../../database/entities/vacancies.entity';
 import { vacanciesListMock } from './vacancies-list.mock';
 
 export const vacanciesRepositoryMock = {

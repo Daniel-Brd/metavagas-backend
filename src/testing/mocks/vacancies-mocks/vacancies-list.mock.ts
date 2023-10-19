@@ -1,4 +1,4 @@
-import { technologyListMock } from '../mocks/technologies-mocks/technology-list.mock';
+import { technologyListMock } from '../technologies-mocks/technology-list.mock';
 
 export const vacanciesListMock = [
   {
