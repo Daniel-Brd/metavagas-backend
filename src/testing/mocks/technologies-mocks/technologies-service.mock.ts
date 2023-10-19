@@ -12,5 +12,8 @@ export const technologiesServiceMock = {
     update: jest
       .fn()
       .mockResolvedValue({ ...technologyListMock[0], ...updateTechnologyMock }),
+    findByName: jest.fn().mockImplementation(techName => {
+      technologyListMock.find(tech => tech.techName === techName);
+    }),
   },
 };
