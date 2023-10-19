@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TechnologiesController } from './technologies.controller';
-import { technologiesServiceMock } from '../testing/mocks/technologies-mocks/technologies-service-mock';
+import { technologiesServiceMock } from '../testing/mocks/technologies-mocks/technologies-service.mock';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { authGuardMock } from '../testing/mocks/auth-mocks/auth-guard.mock';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { rolesGuardMock } from '../testing/mocks/auth-mocks/roles-guard.mock';
-import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology-mock';
-import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list-mock';
+import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology.mock';
+import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list.mock';
 import { HttpException } from '@nestjs/common';
-import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology-mock';
+import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology.mock';
 
 describe('TechnologiesController', () => {
   let controller: TechnologiesController;
@@ -18,11 +18,11 @@ describe('TechnologiesController', () => {
       controllers: [TechnologiesController],
       providers: [technologiesServiceMock],
     })
-    .overrideGuard(AuthGuard)
-    .useValue(authGuardMock)
-    .overrideGuard(RolesGuard)
-    .useValue(rolesGuardMock)
-    .compile();
+      .overrideGuard(AuthGuard)
+      .useValue(authGuardMock)
+      .overrideGuard(RolesGuard)
+      .useValue(rolesGuardMock)
+      .compile();
 
     controller = module.get<TechnologiesController>(TechnologiesController);
   });
@@ -40,73 +40,70 @@ describe('TechnologiesController', () => {
   });
 
   describe('Read', () => {
-  describe('findAll', () => {
-    it('Should return a list of technologies', async () => {
-      const result = await controller.findAll();
+    describe('findAll', () => {
+      it('Should return a list of technologies', async () => {
+        const result = await controller.findAll();
 
-      expect(result).toEqual(technologyListMock);
+        expect(result).toEqual(technologyListMock);
+      });
+    });
+
+    describe('findOne', () => {
+      it('Should return an technology', async () => {
+        const result = await controller.findOne(technologyListMock[0].id);
+
+        expect(result).toEqual(technologyListMock[0]);
+      });
+
+      it('Should return an error if the technology is not found', async () => {
+        (
+          technologiesServiceMock.useValue.findById as jest.Mock
+        ).mockResolvedValue(new HttpException('Technology not found.', 404));
+
+        const result = await controller.findOne(
+          '1534abcd-a01b-1834-5678-1ab2c34d56e6',
+        );
+
+        expect(result).toEqual(new HttpException('Technology not found.', 404));
+        expect(result).toBeInstanceOf(HttpException);
+      });
     });
   });
-
-  describe('findOne', () => {
-    it('Should return an technology', async () => {
-      const result = await controller.findOne(technologyListMock[0].id);
-
-      expect(result).toEqual(technologyListMock[0]);
-    });
-
-    it('Should return an error if the technology is not found', async () => {
-      (technologiesServiceMock.useValue.findById as jest.Mock).mockResolvedValue(
-        new HttpException('Technology not found.', 404),
-      );
-
-      const result = await controller.findOne(
-        '1534abcd-a01b-1834-5678-1ab2c34d56e6',
-      );
-
-      expect(result).toEqual(new HttpException('Technology not found.', 404));
-      expect(result).toBeInstanceOf(HttpException);
-    });
-  });
-});
   describe('remove', () => {
     it('Should successfully remove a technology', async () => {
       const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
       const result = await controller.remove(idToRemove);
 
       expect(result).toEqual({ success: true });
-      expect(technologiesServiceMock.useValue.remove).toHaveBeenCalledWith(idToRemove);
+      expect(technologiesServiceMock.useValue.remove).toHaveBeenCalledWith(
+        idToRemove,
+      );
     });
 
     it('Should return an error if the technology is not found', async () => {
       const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
-      (technologiesServiceMock.useValue.remove as jest.Mock).mockRejectedValue(
+      technologiesServiceMock.useValue.remove.mockRejectedValue(
         new HttpException('Technology not found', 404),
       );
-
-      try {
-          await controller.remove(idToRemove);
-          fail('Expected HttpException not thrown');
-      } catch (error) {
-          expect(error).toEqual(new HttpException('Technology not found', 404));
-          expect(error).toBeInstanceOf(HttpException);
-      }
-    });
-});
-
-describe('Update', () => {
-  describe('update', () => {
-    it('Should update and return an technology', async () => {
-      const result = await controller.update(
-        technologyListMock[0].id,
-        updateTechnologyMock,
+      await expect(controller.remove(idToRemove)).rejects.toThrow(
+        new HttpException('Technology not found', 404),
       );
+    });
+  });
 
-      expect(result).toEqual({
-        ...technologyListMock[0],
-        ...updateTechnologyMock
+  describe('Update', () => {
+    describe('update', () => {
+      it('Should update and return an technology', async () => {
+        const result = await controller.update(
+          technologyListMock[0].id,
+          updateTechnologyMock,
+        );
+
+        expect(result).toEqual({
+          ...technologyListMock[0],
+          ...updateTechnologyMock,
+        });
       });
     });
   });
-});
 });

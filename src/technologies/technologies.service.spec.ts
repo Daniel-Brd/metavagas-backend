@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TechnologiesService } from './technologies.service';
-import { technologyRepositoryMock } from '../testing/mocks/technologies-mocks/technology-repository-mock';
-import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology-mock';
-import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list-mock';
+import { technologyRepositoryMock } from '../testing/mocks/technologies-mocks/technology-repository.mock';
+import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology.mock';
+import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list.mock';
 import { HttpException } from '@nestjs/common';
-import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology-mock';
+import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology.mock';
 
 describe('TechnologiesService', () => {
   let service: TechnologiesService;
@@ -98,14 +98,14 @@ describe('TechnologiesService', () => {
     });
 
     describe('findByName', () => {
-      const tecName = 'Nestjs';
+      const techName = 'Nestjs';
 
       it('Should return a technology when found by name', async () => {
         technologyRepositoryMock.useValue.findOneBy.mockResolvedValue(
           technologyListMock[0],
         );
 
-        const result = await service.findByName(tecName);
+        const result = await service.findByName(techName);
         expect(result).toEqual(technologyListMock[0]);
       });
 
@@ -114,7 +114,7 @@ describe('TechnologiesService', () => {
 
         await expectError(
           () => service.findByName('example'),
-          'technology \'example\' was not found',
+          "technology 'example' was not found",
           404,
         );
       });
@@ -125,7 +125,7 @@ describe('TechnologiesService', () => {
         );
 
         await expectError(
-          () => service.findByName(tecName),
+          () => service.findByName(techName),
           'Unexpected error',
           500,
         );
@@ -136,43 +136,79 @@ describe('TechnologiesService', () => {
   describe('Technology Update and Removal', () => {
     describe('update', () => {
       it('Should update and return a technology', async () => {
-        technologyRepositoryMock.useValue.findOne.mockResolvedValue(
-          technologyListMock[0],
+        (
+          technologyRepositoryMock.useValue.findOneBy as jest.Mock
+        ).mockResolvedValue({
+          ...technologyListMock[0],
+          ...updateTechnologyMock,
+        });
+
+        const result = await service.update(
+          technologyListMock[0].id,
+          updateTechnologyMock,
         );
 
-        try {
-          const result = await service.update(
-            technologyListMock[0].id,
-            updateTechnologyMock,
-          );
-          console.log('Resultado:', result);
-        } catch (error) {
-          console.log('Erro no teste:', error);
-        }
+        expect(result).toEqual({
+          ...technologyListMock[0],
+          ...updateTechnologyMock,
+        });
+      });
+
+      it('Should return an error if update fails', async () => {
+        (
+          technologyRepositoryMock.useValue.update as jest.Mock
+        ).mockResolvedValue(null);
+
+        await expect(
+          service.update(technologyListMock[0].id, updateTechnologyMock),
+        ).rejects.toThrow('Something went wrong with update.');
+      });
+
+      it('Should return an error if technology is not found', async () => {
+        (
+          technologyRepositoryMock.useValue.findOneBy as jest.Mock
+        ).mockResolvedValue(null);
+
+        await expect(
+          service.update(technologyListMock[0].id, updateTechnologyMock),
+        ).rejects.toThrow('Technology not found');
       });
     });
 
     describe('remove', () => {
-      const mockTech = technologyListMock[0];
+      const triggerErrorId = 'd98a2114-0000-4591-982c-bdbd38600000';
 
-      it('Should remove a technology and return a success message', async () => {
-        technologyRepositoryMock.useValue.findOne.mockResolvedValue(mockTech);
+      it('Must successfully remove and return technology', async () => {
+        service.findById = jest.fn().mockResolvedValue(technologyListMock[0]);
 
         technologyRepositoryMock.useValue.delete.mockResolvedValue({
           affected: 1,
-          raw: [],
-        } as any);
-
-        const result = await service.remove(mockTech.id);
-
-        expect(result).toEqual({
-          message: 'technology successfully deleted',
-          removed: mockTech,
         });
 
-        expect(technologyRepositoryMock.useValue.delete).toHaveBeenCalledWith({
-          id: mockTech.id,
-        });
+        const response = await service.remove(technologyListMock[0].id);
+
+        expect(response.message).toBe('technology successfully deleted');
+        expect(response.removed).toEqual(technologyListMock[0]);
+      });
+
+      it('Should throw a 404 HttpException exception when the technology is not found', async () => {
+        technologyRepositoryMock.useValue.findOne.mockResolvedValueOnce(null);
+
+        await expect(service.remove(triggerErrorId)).rejects.toThrow(
+          new HttpException('Technology not found', 404),
+        );
+      });
+
+      it('Should throw a 500 HttpException on unexpected error during delete', async () => {
+        service.findById = jest.fn().mockResolvedValue(technologyListMock[0]);
+
+        technologyRepositoryMock.useValue.delete.mockRejectedValue(
+          new Error('Unexpected error'),
+        );
+
+        await expect(service.remove(technologyListMock[0].id)).rejects.toThrow(
+          new HttpException('Unexpected error', 500),
+        );
       });
     });
   });

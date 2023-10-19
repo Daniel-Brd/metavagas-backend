@@ -64,7 +64,7 @@ export class VacanciesService {
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
-        error.statusCode || 500,
+        error.status || 500,
       );
     }
   }
@@ -73,31 +73,49 @@ export class VacanciesService {
     try {
       const workbook = XLSX.read(spreadsheet.buffer);
 
-      const result = await Promise.all(
-        workbook.SheetNames.map(async sheetName => {
-          const worksheet = workbook.Sheets[sheetName];
-          const rows = XLSX.utils.sheet_to_json(worksheet) as any[];
+      const result = workbook.SheetNames.map(async sheetName => {
+        const worksheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(worksheet) as any[];
 
-          const createVacancyPromises = rows.map(async row => {
-            const technologies = row.technologies.split(',');
-            const vacancyData = { ...row, technologies };
-            return this.create(vacancyData, currentUser);
+        const filterErrors = async (
+          vacancyData: any,
+          row: any,
+        ): Promise<any> => {
+          // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-unused-vars
+          return new Promise(async (res, _rej) => {
+            try {
+              const vacancy = await this.create(vacancyData, currentUser);
+
+              res({ vacancy, success: true });
+            } catch (error) {
+              res({ row, ...error, success: false });
+            }
           });
+        };
 
-          const createdVacancies = await Promise.all(createVacancyPromises);
+        const createVacancies = async (): Promise<any> => {
+          const vacanciesPromises = await Promise.all(
+            rows.map(async row => {
+              const technologies = row.technologies.split(',');
+              const vacancyData = { ...row, technologies };
+              return filterErrors(vacancyData, row);
+            }),
+          );
 
-          return {
-            sheetName,
-            vacancies: createdVacancies,
-          };
-        }),
-      );
+          const success = vacanciesPromises.filter(vacancy => vacancy.success);
+          const failed = vacanciesPromises.filter(vacancy => !vacancy.success);
 
-      return result;
+          return { sheetName, vacancies: { success, failed } };
+        };
+
+        return await createVacancies();
+      });
+
+      return await Promise.all(result);
     } catch (error) {
       throw new HttpException(
         error.message || 'Internal server error.',
-        error.statusCode || 500,
+        error.status || 500,
       );
     }
   }
@@ -139,7 +157,7 @@ export class VacanciesService {
             );
 
             whereConditions['technologies'] = {
-              tecName: In(technologies.map(tech => tech.tecName)),
+              techName: In(technologies.map(tech => tech.techName)),
             };
           }
           if (key === 'vacancyTypes') {
@@ -182,9 +200,14 @@ export class VacanciesService {
       });
 
       return {
-        id: vacancy.id,
-        companyName: vacancy.company.name,
-        advertiserName: vacancy.advertiser.name,
+        ...vacancy,
+        company: {
+          id: vacancy.company.id,
+          name: vacancy.company.name,
+        },
+        advertiser: {
+          name: vacancy.advertiser.name,
+        },
       };
     } catch (error) {
       throw new HttpException('Vacancy not found.', 404);

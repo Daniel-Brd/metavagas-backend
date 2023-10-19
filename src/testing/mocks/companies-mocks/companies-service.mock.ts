@@ -1,5 +1,5 @@
-import { companyListMock } from './company-list-mock';
-import { CompaniesService } from '../../companies/companies.service';
+import { companyListMock } from './companies-list.mock';
+import { CompaniesService } from '../../../companies/companies.service';
 
 export const companyServiceyMock = {
   provide: CompaniesService,
@@ -8,8 +8,11 @@ export const companyServiceyMock = {
     findAll: jest.fn().mockResolvedValue(companyListMock),
     findById: jest.fn().mockResolvedValue(companyListMock[0]),
     update: jest.fn().mockImplementation((companyId, updatedValues) => ({
-      ...companyListMock.find(c => c.id === companyId),
+      ...companyListMock.find(company => company.id === companyId),
       ...updatedValues,
     })),
+    findByName: jest.fn().mockImplementation(companyName => {
+      companyListMock.find(company => company.name === companyName);
+    }),
   },
 };

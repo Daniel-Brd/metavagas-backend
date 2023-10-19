@@ -5,7 +5,7 @@ export class CreateTechnologyDto {
   @ApiProperty({ type: String, example: 'TechX' })
   @IsNotEmpty()
   @IsString()
-  tecName: string;
+  techName: string;
 
   @ApiProperty({ type: String, example: 'TechSolutions Ltd.' })
   @IsNotEmpty()
