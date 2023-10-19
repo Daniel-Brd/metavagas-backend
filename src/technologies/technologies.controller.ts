@@ -39,8 +39,8 @@ export class TechnologiesController {
   @ApiOperation({ summary: 'Search all registered technologies' })
   @ApiResponse({ status: 200, description: 'Lists of all technologies' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  findAll(@Query('tecName') tecNames?: string[]) {
-    return this.technologiesService.findAll(tecNames);
+  findAll(@Query('techName') techNames?: string[]) {
+    return this.technologiesService.findAll(techNames);
   }
 
   @Get(':id')

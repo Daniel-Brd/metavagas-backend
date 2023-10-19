@@ -1,4 +1,4 @@
-import { UpdateCompanyDto } from '../../companies/dto/update-company.dto';
+import { UpdateCompanyDto } from '../../../companies/dto/update-company.dto';
 
 export const updateCompanyrMock: UpdateCompanyDto = {
   name: 'update test1',

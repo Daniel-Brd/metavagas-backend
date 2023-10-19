@@ -6,6 +6,10 @@ export const usersListMock = [
     id: 'd98a2114-a1e3-4591-982c-bdbd38607e44',
     role: 'candidate',
     isActive: true,
+    vacancies: [
+      { id: '330c6a93-ba2f-4c26-80d7-1af59763197c' },
+      { id: 'a7a2c174-e591-4d81-98c2-76c4d8bcad12' },
+    ],
     createdAt: '2023-01-01T00:0:00.000Z',
     updateAt: '2023-01-01T00:0:00.000Z',
   },
@@ -16,6 +20,7 @@ export const usersListMock = [
     id: 'ca00d335-e2fe-46a5-8527-055337c90ccb',
     role: 'candidate',
     isActive: true,
+    vacancies: [],
     createdAt: '2023-02-02T00:0:00.000Z',
     updateAt: '2023-02-02T00:0:00.000Z',
   },
