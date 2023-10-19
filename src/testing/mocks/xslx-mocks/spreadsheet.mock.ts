@@ -1,4 +1,4 @@
-import { getFileMock } from '../../../utils/functions';
+import { getFileMock } from '../../../utils/functions/get-file-mock';
 
 const tempSpreadsheetMock: Partial<Express.Multer.File> = {
   fieldname: 'file',
