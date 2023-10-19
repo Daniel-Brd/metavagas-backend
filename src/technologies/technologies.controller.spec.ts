@@ -82,17 +82,12 @@ describe('TechnologiesController', () => {
 
     it('Should return an error if the technology is not found', async () => {
       const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
-      (technologiesServiceMock.useValue.remove as jest.Mock).mockRejectedValue(
+      technologiesServiceMock.useValue.remove.mockRejectedValue(
         new HttpException('Technology not found', 404),
       );
-
-      try {
-        await controller.remove(idToRemove);
-        fail('Expected HttpException not thrown');
-      } catch (error) {
-        expect(error).toEqual(new HttpException('Technology not found', 404));
-        expect(error).toBeInstanceOf(HttpException);
-      }
+      await expect(controller.remove(idToRemove)).rejects.toThrow(
+        new HttpException('Technology not found', 404),
+      );
     });
   });
 
