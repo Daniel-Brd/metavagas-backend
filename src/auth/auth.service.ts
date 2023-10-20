@@ -60,6 +60,7 @@ export class AuthService {
 
       return {
         data: {
+          id,
           name,
           email,
           isActive,
