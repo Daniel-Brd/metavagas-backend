@@ -30,6 +30,7 @@ describe('AuthService', () => {
       const result = await service.login(loginMock);
       expect(result).toEqual({
         data: {
+          id: usersListMock[0].id,
           name: usersListMock[0].name,
           email: usersListMock[0].email,
           isActive: usersListMock[0].isActive,

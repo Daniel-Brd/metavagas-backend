@@ -6,8 +6,13 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RoleEnum } from '../../enums/role.enum';
-import { PERMISSION_KEY, ROLES_KEY } from '../../utils/constants';
+import {
+  ACTIVATE_USER_URL,
+  PERMISSION_KEY,
+  ROLES_KEY,
+} from '../../utils/constants';
 import { PermissionEnum } from '../../enums/permission.enum';
+import { CurrentUserType } from 'src/decorators/user.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,6 +22,11 @@ export class RolesGuard implements CanActivate {
     const {
       user,
       params: { id: targetId },
+      url,
+    }: {
+      user: CurrentUserType;
+      params: { id: string };
+      url: string;
     } = context.switchToHttp().getRequest();
 
     const requiredRoles = this.reflector.getAllAndOverride<RoleEnum[]>(
@@ -29,7 +39,7 @@ export class RolesGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    if (!user.isActive) {
+    if (!user.isActive && url !== `${ACTIVATE_USER_URL}${user.userId}`) {
       throw new HttpException('Inactive user', 401);
     }
 

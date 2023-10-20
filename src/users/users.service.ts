@@ -108,11 +108,7 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const user = await this.findById(id);
-
-      if (!user) {
-        throw new HttpException('User not found.', 404);
-      }
+      await this.findById(id);
 
       const tempAffected = this.usersRepository.create(updateUserDto);
 
@@ -145,6 +141,27 @@ export class UsersService {
 
       if (!affected) {
         throw new HttpException('Something went wrong with delete.', 400);
+      }
+
+      return await this.findById(id);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error.',
+        error.status || 500,
+      );
+    }
+  }
+
+  async activateUser(id: string) {
+    try {
+      await this.findById(id);
+
+      const affected = await this.usersRepository.update(id, {
+        isActive: true,
+      });
+
+      if (!affected) {
+        throw new HttpException('Something went wrong with activation.', 400);
       }
 
       return await this.findById(id);
