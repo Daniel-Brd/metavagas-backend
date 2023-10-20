@@ -29,6 +29,10 @@ export class RolesGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
+    if (!user.isActive) {
+      throw new HttpException('Inactive user', 401);
+    }
+
     if (!requiredRoles) {
       return true;
     }
