@@ -145,6 +145,24 @@ describe('UsersService', () => {
         );
       });
     });
+
+    describe('activateUser', () => {
+      it('Should activate an user', async () => {
+        (userRepositoryMock.useValue.findOneBy as jest.Mock).mockResolvedValue({
+          ...usersListMock[0],
+          isActive: true,
+        });
+
+        (userRepositoryMock.useValue.update as jest.Mock).mockResolvedValue({
+          ...usersListMock[0],
+          isActive: true,
+        });
+
+        const result = await service.activateUser(usersListMock[0].id);
+
+        expect(result).toEqual({ ...usersListMock[0], isActive: true });
+      });
+    });
   });
 
   describe('Delete', () => {
