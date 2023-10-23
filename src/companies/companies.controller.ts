@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -18,6 +19,9 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Company } from '../database/entities/company.entity';
 import { QueryCompanyDTO } from './dto/query-company.dto';
+import { CreateCompanyDoc } from '../docs/companies/company-create.doc';
+import { CompanyEntityDoc } from '../docs/companies/company-entity.doc';
+import { CompanyUpdateDoc } from '../docs/companies/company-update.doc';
 
 @ApiTags('companies')
 @ApiBearerAuth('JWT-auth')
@@ -27,9 +31,11 @@ export class CompaniesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new company' })
+  @ApiBody({ type: CreateCompanyDoc })
   @ApiResponse({
     status: 201,
     description: 'Successfully created a new company',
+    type: CompanyEntityDoc,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   create(@Body() createCompanyDto: CreateCompanyDto) {
@@ -38,7 +44,12 @@ export class CompaniesController {
 
   @Get()
   @ApiOperation({ summary: 'List all registered companies' })
-  @ApiResponse({ status: 200, description: 'List of all registered companies' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all registered companies',
+    isArray: true,
+    type: CreateCompanyDoc,
+  })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async findAll(@Query() query?: QueryCompanyDTO): Promise<Company[]> {
     return await this.companiesService.findAll(query);
@@ -46,7 +57,11 @@ export class CompaniesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Search for a company by ID' })
-  @ApiResponse({ status: 200, description: 'Company found' })
+  @ApiResponse({
+    status: 200,
+    description: 'Company found',
+    type: CreateCompanyDoc,
+  })
   @ApiResponse({ status: 404, description: 'Company not found' })
   findOne(@Param('id') id: string) {
     return this.companiesService.findById(id);
@@ -54,7 +69,12 @@ export class CompaniesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a company by ID' })
-  @ApiResponse({ status: 200, description: 'Company updated successfully' })
+  @ApiBody({ type: CreateCompanyDoc })
+  @ApiResponse({
+    status: 200,
+    description: 'Company updated successfully',
+    type: CompanyUpdateDoc,
+  })
   @ApiResponse({ status: 404, description: 'Company not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {

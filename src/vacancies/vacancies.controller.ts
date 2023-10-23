@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +31,8 @@ import { CurrentUser } from '../decorators/user.decorator';
 import { Auth } from '../decorators/auth.decorator';
 import { RoleEnum } from '../enums/role.enum';
 import { PermissionEnum } from '../enums/permission.enum';
+import { CreateVacancyDoc } from '../docs/vacancies/vacancies-create.doc';
+import { VacancyEntityDoc } from '../docs/vacancies/vacancies-entity.doc';
 
 @ApiTags('vacancies')
 @ApiBearerAuth('JWT-auth')
@@ -43,7 +46,12 @@ export class VacanciesController {
   @Post()
   @Auth([RoleEnum.advertiser])
   @ApiOperation({ summary: 'Create a new vacancy as an advertiser' })
-  @ApiResponse({ status: 201, description: 'Vacancy created successfully' })
+  @ApiBody({ type: CreateVacancyDoc })
+  @ApiResponse({
+    status: 201,
+    description: 'Vacancy created successfully',
+    type: VacancyEntityDoc,
+  })
   @ApiResponse({ status: 400, description: 'Invalid request ' })
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
   create(@Body() payload: CreateVacancyDto, @CurrentUser() currentUser: any) {
