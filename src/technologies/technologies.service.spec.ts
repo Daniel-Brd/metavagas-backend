@@ -114,7 +114,7 @@ describe('TechnologiesService', () => {
 
         await expectError(
           () => service.findByName('example'),
-          "technology 'example' was not found",
+          'technology "example" was not found',
           404,
         );
       });
