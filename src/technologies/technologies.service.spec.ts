@@ -114,7 +114,8 @@ describe('TechnologiesService', () => {
 
         await expectError(
           () => service.findByName('example'),
-          'technology "example" was not found',
+          // eslint-disable-next-line quotes
+          "technology 'example' was not found",
           404,
         );
       });

@@ -66,6 +66,30 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
+  @Patch('delete/:id')
+  @Auth([RoleEnum.admin], [PermissionEnum.self])
+  @ApiOperation({ summary: 'Deactivate a user by ID' })
+  @ApiBody({ type: CreateUserDoc })
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully deactivated',
+    type: UserDeleteDoc,
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  softDelete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.softDelete(id);
+  }
+
+  @Patch('activate/:id')
+  @Auth([RoleEnum.admin], [PermissionEnum.self])
+  @ApiOperation({ summary: 'activate an user by ID' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  activeteUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.activateUser(id);
+  }
+
   @Patch(':id')
   @Auth([RoleEnum.admin], [PermissionEnum.self])
   @ApiOperation({ summary: 'Update a user by ID' })
@@ -82,20 +106,5 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto);
-  }
-
-  @Patch(':id/delete')
-  @Auth([RoleEnum.admin], [PermissionEnum.self])
-  @ApiOperation({ summary: 'Deactivate a user by ID' })
-  @ApiBody({ type: CreateUserDoc })
-  @ApiResponse({
-    status: 200,
-    description: 'User successfully deactivated',
-    type: UserDeleteDoc,
-  })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  softDelete(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.softDelete(id);
   }
 }
