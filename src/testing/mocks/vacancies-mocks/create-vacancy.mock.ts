@@ -1,4 +1,4 @@
-import { CreateVacancyDto } from '../../../vacancies/dto/create-vacancy.dto';
+import { CreateVacancyDto } from '../../../entities/vacancies/dto/create-vacancy.dto';
 
 export const createVacancyMock: CreateVacancyDto = {
   companyName: 'mocked company name',

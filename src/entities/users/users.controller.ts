@@ -15,13 +15,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Auth } from '../decorators/auth.decorator';
-import { RoleEnum } from '../enums/role.enum';
-import { CurrentUser } from '../decorators/user.decorator';
-import { PermissionEnum } from '../enums/permission.enum';
-import { CreateUserDoc } from '../docs/auth/auth-create.doc';
-import { UserUpdateDoc } from '../docs/users/user-update.doc';
-import { UserDeleteDoc } from '../docs/users/user-delete.doc';
+import { Auth } from '../../decorators/auth.decorator';
+import { RoleEnum } from '../../enums/role.enum';
+import { CurrentUser } from '../../decorators/user.decorator';
+import { PermissionEnum } from '../../enums/permission.enum';
+import { CreateUserDoc } from '../../docs/auth/auth-create.doc';
+import { UserUpdateDoc } from '../../docs/users/user-update.doc';
+import { UserDeleteDoc } from '../../docs/users/user-delete.doc';
 
 @ApiTags('users')
 @ApiBearerAuth('JWT-auth')

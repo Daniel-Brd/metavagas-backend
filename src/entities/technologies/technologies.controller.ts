@@ -18,10 +18,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Auth } from '../decorators/auth.decorator';
-import { RoleEnum } from '../enums/role.enum';
-import { CreateTechnologiesDoc } from '../docs/technologies/technologies-create.doc';
-import { TechnologiesEntityDoc } from '../docs/technologies/techonologies-entity.doc';
+import { Auth } from '../../decorators/auth.decorator';
+import { RoleEnum } from '../../enums/role.enum';
+import { CreateTechnologiesDoc } from '../../docs/technologies/technologies-create.doc';
+import { TechnologiesEntityDoc } from '../../docs/technologies/techonologies-entity.doc';
 
 @ApiTags('technologies')
 @ApiBearerAuth('JWT-auth')

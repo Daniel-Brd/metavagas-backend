@@ -1,4 +1,4 @@
-import { CreateTechnologyDto } from '../../../technologies/dto/create-technology.dto';
+import { CreateTechnologyDto } from '../../../entities/technologies/dto/create-technology.dto';
 
 export const createTechnologyMock: CreateTechnologyDto = {
   techName: 'tecTest1',

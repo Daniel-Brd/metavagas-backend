@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { userRepositoryMock } from '../testing/mocks/users-mocks/users-repository.mock';
-import { createUserMock } from '../testing/mocks/users-mocks/create-user.mock';
-import { usersListMock } from '../testing/mocks/users-mocks/users-list.mock';
-import { updateUserMock } from '../testing/mocks/users-mocks/update-user.mock';
-import { userProfileMock } from '../testing/mocks/users-mocks/user-profile.mock';
+import { userRepositoryMock } from '../../testing/mocks/users-mocks/users-repository.mock';
+import { createUserMock } from '../../testing/mocks/users-mocks/create-user.mock';
+import { usersListMock } from '../../testing/mocks/users-mocks/users-list.mock';
+import { updateUserMock } from '../../testing/mocks/users-mocks/update-user.mock';
+import { userProfileMock } from '../../testing/mocks/users-mocks/user-profile.mock';
 import { HttpException } from '@nestjs/common';
 
 describe('UsersService', () => {

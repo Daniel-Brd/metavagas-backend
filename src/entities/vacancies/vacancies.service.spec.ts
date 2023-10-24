@@ -2,20 +2,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException } from '@nestjs/common';
 
 import { VacanciesService } from './vacancies.service';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
 
-import { authGuardMock } from '../testing/mocks/auth-mocks/auth-guard.mock';
-import { rolesGuardMock } from '../testing/mocks/auth-mocks/roles-guard.mock';
-import { usersServiceMock } from '../testing/mocks/users-mocks/users-service.mock';
-import { companyServiceyMock } from '../testing/mocks/companies-mocks/companies-service.mock';
-import { technologiesServiceMock } from '../testing/mocks/technologies-mocks/technologies-service.mock';
-import { currentUserMock } from '../testing/mocks/users-mocks/current-user.mock';
-import { createVacancyMock } from '../testing/mocks/vacancies-mocks/create-vacancy.mock';
-import { vacanciesListMock } from '../testing/mocks/vacancies-mocks/vacancies-list.mock';
-import { vacanciesRepositoryMock } from '../testing/mocks/vacancies-mocks/vacancies-repository.mock';
-import { spreadsheetMock } from '../testing/mocks/xslx-mocks/spreadsheet.mock';
-import { spreadsheetReturnMock } from '../testing/mocks/xslx-mocks/srpeadsheet-return.mock';
+import { authGuardMock } from '../../testing/mocks/auth-mocks/auth-guard.mock';
+import { rolesGuardMock } from '../../testing/mocks/auth-mocks/roles-guard.mock';
+import { usersServiceMock } from '../../testing/mocks/users-mocks/users-service.mock';
+import { companyServiceyMock } from '../../testing/mocks/companies-mocks/companies-service.mock';
+import { technologiesServiceMock } from '../../testing/mocks/technologies-mocks/technologies-service.mock';
+import { currentUserMock } from '../../testing/mocks/users-mocks/current-user.mock';
+import { createVacancyMock } from '../../testing/mocks/vacancies-mocks/create-vacancy.mock';
+import { vacanciesListMock } from '../../testing/mocks/vacancies-mocks/vacancies-list.mock';
+import { vacanciesRepositoryMock } from '../../testing/mocks/vacancies-mocks/vacancies-repository.mock';
+import { spreadsheetMock } from '../../testing/mocks/xslx-mocks/spreadsheet.mock';
+import { spreadsheetReturnMock } from '../../testing/mocks/xslx-mocks/srpeadsheet-return.mock';
 
 describe('VacanciesService', () => {
   let service: VacanciesService;

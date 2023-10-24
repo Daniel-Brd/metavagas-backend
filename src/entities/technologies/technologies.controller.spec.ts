@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TechnologiesController } from './technologies.controller';
-import { technologiesServiceMock } from '../testing/mocks/technologies-mocks/technologies-service.mock';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { authGuardMock } from '../testing/mocks/auth-mocks/auth-guard.mock';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { rolesGuardMock } from '../testing/mocks/auth-mocks/roles-guard.mock';
-import { createTechnologyMock } from '../testing/mocks/technologies-mocks/create-technology.mock';
-import { technologyListMock } from '../testing/mocks/technologies-mocks/technology-list.mock';
+import { technologiesServiceMock } from '../../testing/mocks/technologies-mocks/technologies-service.mock';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { authGuardMock } from '../../testing/mocks/auth-mocks/auth-guard.mock';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { rolesGuardMock } from '../../testing/mocks/auth-mocks/roles-guard.mock';
+import { createTechnologyMock } from '../../testing/mocks/technologies-mocks/create-technology.mock';
+import { technologyListMock } from '../../testing/mocks/technologies-mocks/technology-list.mock';
 import { HttpException } from '@nestjs/common';
-import { updateTechnologyMock } from '../testing/mocks/technologies-mocks/update-technology.mock';
+import { updateTechnologyMock } from '../../testing/mocks/technologies-mocks/update-technology.mock';
 
 describe('TechnologiesController', () => {
   let controller: TechnologiesController;

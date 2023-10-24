@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompaniesService } from './companies.service';
-import { createCompanyrMock } from '../testing/mocks/companies-mocks/create-company.mock';
-import { companyListMock } from '../testing/mocks/companies-mocks/companies-list.mock';
-import { companyRepositoryMock } from '../testing/mocks/companies-mocks/companies-repository.mock';
+import { createCompanyrMock } from '../../testing/mocks/companies-mocks/create-company.mock';
+import { companyListMock } from '../../testing/mocks/companies-mocks/companies-list.mock';
+import { companyRepositoryMock } from '../../testing/mocks/companies-mocks/companies-repository.mock';
 import { HttpException } from '@nestjs/common';
 import { Like } from 'typeorm';
 import { QueryCompanyDTO } from './dto/query-company.dto';

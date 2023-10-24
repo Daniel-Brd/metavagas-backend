@@ -8,7 +8,7 @@ import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { QueryVacancyDTO } from './dto/query-vacancy.dto';
 
-import { Vacancy } from '../database/entities/vacancies.entity';
+import { Vacancy } from '../../database/entities/vacancies.entity';
 import { UsersService } from '../users/users.service';
 import { TechnologiesService } from '../technologies/technologies.service';
 import { CompaniesService } from '../companies/companies.service';

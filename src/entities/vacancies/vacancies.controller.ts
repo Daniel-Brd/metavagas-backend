@@ -21,18 +21,18 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { Vacancy } from '../database/entities/vacancies.entity';
+import { Vacancy } from '../../database/entities/vacancies.entity';
 import { VacanciesService } from './vacancies.service';
 import { UsersService } from '../users/users.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { QueryVacancyDTO } from './dto/query-vacancy.dto';
-import { CurrentUser } from '../decorators/user.decorator';
-import { Auth } from '../decorators/auth.decorator';
-import { RoleEnum } from '../enums/role.enum';
-import { PermissionEnum } from '../enums/permission.enum';
-import { CreateVacancyDoc } from '../docs/vacancies/vacancies-create.doc';
-import { VacancyEntityDoc } from '../docs/vacancies/vacancies-entity.doc';
+import { CurrentUser } from '../../decorators/user.decorator';
+import { Auth } from '../../decorators/auth.decorator';
+import { RoleEnum } from '../../enums/role.enum';
+import { PermissionEnum } from '../../enums/permission.enum';
+import { CreateVacancyDoc } from '../../docs/vacancies/vacancies-create.doc';
+import { VacancyEntityDoc } from '../../docs/vacancies/vacancies-entity.doc';
 
 @ApiTags('vacancies')
 @ApiBearerAuth('JWT-auth')

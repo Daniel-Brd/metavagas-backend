@@ -8,7 +8,7 @@ import {
   IsOptional,
   IsBoolean,
 } from 'class-validator';
-import { RoleEnum } from '../../enums/role.enum';
+import { RoleEnum } from '../../../enums/role.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()

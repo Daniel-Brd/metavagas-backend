@@ -17,11 +17,11 @@ import {
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { Company } from '../database/entities/company.entity';
+import { Company } from '../../database/entities/company.entity';
 import { QueryCompanyDTO } from './dto/query-company.dto';
-import { CreateCompanyDoc } from '../docs/companies/company-create.doc';
-import { CompanyEntityDoc } from '../docs/companies/company-entity.doc';
-import { CompanyUpdateDoc } from '../docs/companies/company-update.doc';
+import { CreateCompanyDoc } from '../../docs/companies/company-create.doc';
+import { CompanyEntityDoc } from '../../docs/companies/company-entity.doc';
+import { CompanyUpdateDoc } from '../../docs/companies/company-update.doc';
 
 @ApiTags('companies')
 @ApiBearerAuth('JWT-auth')

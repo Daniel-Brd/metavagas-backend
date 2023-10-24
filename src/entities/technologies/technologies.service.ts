@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { CreateTechnologyDto } from './dto/create-technology.dto';
 import { UpdateTechnologyDto } from './dto/update-technology.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Technology } from '../database/entities/technology.entity';
+import { Technology } from '../../database/entities/technology.entity';
 import { ILike, Repository } from 'typeorm';
 
 @Injectable()

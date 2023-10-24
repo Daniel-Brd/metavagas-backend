@@ -1,4 +1,4 @@
-import { UpdateTechnologyDto } from '../../../technologies/dto/update-technology.dto';
+import { UpdateTechnologyDto } from '../../../entities/technologies/dto/update-technology.dto';
 
 export const updateTechnologyMock: UpdateTechnologyDto = {
   techName: 'updated name',

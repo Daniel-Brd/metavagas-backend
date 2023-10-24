@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompaniesController } from './companies.controller';
-import { companyServiceyMock } from '../testing/mocks/companies-mocks/companies-service.mock';
-import { createCompanyrMock } from '../testing/mocks/companies-mocks/create-company.mock';
-import { companyListMock } from '../testing/mocks/companies-mocks/companies-list.mock';
+import { companyServiceyMock } from '../../testing/mocks/companies-mocks/companies-service.mock';
+import { createCompanyrMock } from '../../testing/mocks/companies-mocks/create-company.mock';
+import { companyListMock } from '../../testing/mocks/companies-mocks/companies-list.mock';
 import { HttpException } from '@nestjs/common';
-import { updateCompanyrMock } from '../testing/mocks/companies-mocks/update-company.mock';
+import { updateCompanyrMock } from '../../testing/mocks/companies-mocks/update-company.mock';
 
 describe('CompaniesController', () => {
   let controller: CompaniesController;
