@@ -22,6 +22,8 @@ import { QueryCompanyDTO } from './dto/query-company.dto';
 import { CreateCompanyDoc } from '../../docs/companies/company-create.doc';
 import { CompanyEntityDoc } from '../../docs/companies/company-entity.doc';
 import { CompanyUpdateDoc } from '../../docs/companies/company-update.doc';
+import { Auth } from '../../decorators/auth.decorator';
+import { RoleEnum } from '../../enums/role.enum';
 
 @ApiTags('companies')
 @ApiBearerAuth('JWT-auth')
@@ -30,6 +32,7 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Create a new company' })
   @ApiBody({ type: CreateCompanyDoc })
   @ApiResponse({
@@ -43,6 +46,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @Auth()
   @ApiOperation({ summary: 'List all registered companies' })
   @ApiResponse({
     status: 200,
@@ -56,6 +60,7 @@ export class CompaniesController {
   }
 
   @Get(':id')
+  @Auth()
   @ApiOperation({ summary: 'Search for a company by ID' })
   @ApiResponse({
     status: 200,
@@ -68,6 +73,7 @@ export class CompaniesController {
   }
 
   @Patch(':id')
+  @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Update a company by ID' })
   @ApiBody({ type: CreateCompanyDoc })
   @ApiResponse({
