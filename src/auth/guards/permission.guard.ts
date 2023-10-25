@@ -6,27 +6,21 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RoleEnum } from '../../enums/role.enum';
-import {
-  ACTIVATE_USER_URL,
-  PERMISSION_KEY,
-  ROLES_KEY,
-} from '../../utils/constants';
+import { PERMISSION_KEY, ROLES_KEY } from '../../utils/constants';
 import { PermissionEnum } from '../../enums/permission.enum';
-import { CurrentUserType } from 'src/decorators/user.decorator';
+import { CurrentUserType } from '../../decorators/user.decorator';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     const {
       user,
       params: { id: targetId },
-      url,
     }: {
       user: CurrentUserType;
       params: { id: string };
-      url: string;
     } = context.switchToHttp().getRequest();
 
     const requiredRoles = this.reflector.getAllAndOverride<RoleEnum[]>(
@@ -38,10 +32,6 @@ export class RolesGuard implements CanActivate {
       PERMISSION_KEY,
       [context.getHandler(), context.getClass()],
     );
-
-    if (!user.isActive && url !== `${ACTIVATE_USER_URL}${user.userId}`) {
-      throw new HttpException('Inactive user', 401);
-    }
 
     if (!requiredRoles) {
       return true;
