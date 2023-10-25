@@ -5,6 +5,10 @@ import { createCompanyrMock } from '../../testing/mocks/companies-mocks/create-c
 import { companyListMock } from '../../testing/mocks/companies-mocks/companies-list.mock';
 import { HttpException } from '@nestjs/common';
 import { updateCompanyrMock } from '../../testing/mocks/companies-mocks/update-company.mock';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { PermissionGuard } from '../../auth/guards/permission.guard';
+import { authGuardMock } from '../../testing/mocks/auth-mocks/auth-guard.mock';
+import { permissionGuardMock } from '../../testing/mocks/auth-mocks/roles-guard.mock';
 
 describe('CompaniesController', () => {
   let controller: CompaniesController;
@@ -13,7 +17,12 @@ describe('CompaniesController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CompaniesController],
       providers: [companyServiceyMock],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue(authGuardMock)
+      .overrideGuard(PermissionGuard)
+      .useValue(permissionGuardMock)
+      .compile();
 
     controller = module.get<CompaniesController>(CompaniesController);
   });
