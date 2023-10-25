@@ -1,4 +1,4 @@
-import { UsersService } from '../../../users/users.service';
+import { UsersService } from '../../../entities/users/users.service';
 import { updateUserMock } from './update-user.mock';
 import { userProfileMock } from './user-profile.mock';
 import { usersListMock } from './users-list.mock';

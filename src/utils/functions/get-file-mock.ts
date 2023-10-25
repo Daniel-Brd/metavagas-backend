@@ -6,7 +6,7 @@ export const getFileMock = async (
   path: string,
 ): Promise<Express.Multer.File> => {
   const { buffer, stream } = await getFileToBuffer(
-    join(__dirname, `../testing/mocks/files-mocks/${path}`),
+    join(__dirname, `../../testing/mocks/files-mocks/${path}`),
   );
 
   return { ...tempFileMock, buffer, stream } as Express.Multer.File;

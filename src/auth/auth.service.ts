@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../entities/users/dto/create-user.dto';
+import { UsersService } from '../entities/users/users.service';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
@@ -60,6 +60,7 @@ export class AuthService {
 
       return {
         data: {
+          id,
           name,
           email,
           isActive,
