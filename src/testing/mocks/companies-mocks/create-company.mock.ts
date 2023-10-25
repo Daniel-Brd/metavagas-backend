@@ -1,4 +1,4 @@
-import { CreateCompanyDto } from '../../../companies/dto/create-company.dto';
+import { CreateCompanyDto } from '../../../entities/companies/dto/create-company.dto';
 
 export const createCompanyrMock: CreateCompanyDto = {
   name: 'test1',

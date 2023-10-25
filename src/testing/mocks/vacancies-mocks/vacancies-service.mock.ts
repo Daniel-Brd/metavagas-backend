@@ -1,4 +1,4 @@
-import { VacanciesService } from '../../../vacancies/vacancies.service';
+import { VacanciesService } from '../../../entities/vacancies/vacancies.service';
 
 export const vacanciesServiceMock = {
   provide: VacanciesService,

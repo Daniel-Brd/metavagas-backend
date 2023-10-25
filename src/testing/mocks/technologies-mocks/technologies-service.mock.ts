@@ -1,4 +1,4 @@
-import { TechnologiesService } from '../../../technologies/technologies.service';
+import { TechnologiesService } from '../../../entities/technologies/technologies.service';
 import { technologyListMock } from './technology-list.mock';
 import { updateTechnologyMock } from './update-technology.mock';
 
