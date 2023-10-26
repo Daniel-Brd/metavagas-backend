@@ -12,6 +12,7 @@ import { Vacancy } from '../../database/entities/vacancies.entity';
 import { UsersService } from '../users/users.service';
 import { TechnologiesService } from '../technologies/technologies.service';
 import { CompaniesService } from '../companies/companies.service';
+import { DEFAULT_MAX_WAGE, DEFAULT_MIN_WAGE } from '../../utils/constants';
 
 @Injectable()
 export class VacanciesService {
@@ -176,12 +177,11 @@ export class VacanciesService {
 
           whereConditions['vacancyType'] = In(queryVacancyTypes);
         }
-        if (key === 'minWage' || key === 'maxWage') {
-          whereConditions['wage'] = Between(
-            Number(query.minWage),
-            Number(query.maxWage),
-          );
-        }
+
+        whereConditions['wage'] = Between(
+          query.minWage ? Number(query.minWage) : DEFAULT_MIN_WAGE,
+          query.maxWage ? Number(query.maxWage) : DEFAULT_MAX_WAGE,
+        );
       }
 
       const [vacancies, count] = await this.vacanciesRepository.findAndCount({

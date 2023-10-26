@@ -1,4 +1,12 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
+import { DEFAULT_MAX_WAGE, DEFAULT_MIN_WAGE } from '../../../utils/constants';
 
 export class CreateVacancyDto {
   @IsNotEmpty()
@@ -7,6 +15,8 @@ export class CreateVacancyDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @Min(DEFAULT_MIN_WAGE)
+  @Max(DEFAULT_MAX_WAGE)
   wage: number;
 
   @IsNotEmpty()
