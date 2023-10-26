@@ -81,6 +81,27 @@ describe('CompaniesController', () => {
       });
     });
   });
+  describe('remove', () => {
+    it('Should successfully remove a company', async () => {
+      const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
+      const result = await controller.remove(idToRemove);
+
+      expect(result).toEqual({ success: true });
+      expect(companyServiceyMock.useValue.remove).toHaveBeenCalledWith(
+        idToRemove,
+      );
+    });
+
+    it('Should return an error if the company is not found', async () => {
+      const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
+      companyServiceyMock.useValue.remove.mockRejectedValue(
+        new HttpException('Company not found', 404),
+      );
+      await expect(controller.remove(idToRemove)).rejects.toThrow(
+        new HttpException('Company not found', 404),
+      );
+    });
+  });
 
   describe('Update', () => {
     describe('update', () => {

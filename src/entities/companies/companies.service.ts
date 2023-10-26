@@ -105,4 +105,22 @@ export class CompaniesService {
 
     return savedCompany;
   }
+
+  async remove(id: string) {
+    try {
+      const company = await this.companyRepository.findOneBy({ id });
+
+      if (!company) {
+        throw new HttpException('Company not found.', 404);
+      }
+      await this.companyRepository.delete({ id });
+
+      return { message: 'company sucessfully deleted', removed: company };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Internal server error',
+        error.status || 500,
+      );
+    }
+  }
 }
