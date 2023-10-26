@@ -124,7 +124,7 @@ export class VacanciesService {
     page: number,
     limit: number,
     query?: QueryVacancyDTO,
-  ): Promise<{ vacancies: Vacancy[]; count: number }> {
+  ): Promise<any> {
     try {
       const commonOptions = {
         relations: ['company', 'advertiser', 'technologies'],
@@ -155,9 +155,17 @@ export class VacanciesService {
             queryTechologies,
           );
 
-          whereConditions['technologies'] = {
-            techName: In(technologies.map(tech => tech.techName)),
-          };
+          const filteredVacancies = await this.vacanciesRepository.find({
+            where: {
+              technologies: {
+                techName: In(technologies.map(tech => tech.techName)),
+              },
+            },
+          });
+
+          whereConditions['id'] = In(
+            filteredVacancies.map(vacancy => vacancy.id),
+          );
         }
         if (key === 'vacancyTypes') {
           let queryVacancyTypes = query.vacancyTypes;

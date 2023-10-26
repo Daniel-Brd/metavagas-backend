@@ -9,6 +9,7 @@ export const companyRepositoryMock = {
     find: jest.fn().mockResolvedValue(companyListMock),
     findOne: jest.fn().mockResolvedValue(companyListMock[0]),
     findOneBy: jest.fn().mockResolvedValue(companyListMock),
+    delete: jest.fn().mockResolvedValue({ affected: 1 } as any),
     merge: jest.fn().mockImplementation((existingCompany, updatedValues) => ({
       ...existingCompany,
       ...updatedValues,

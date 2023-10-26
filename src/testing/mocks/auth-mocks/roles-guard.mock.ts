@@ -1,5 +1,5 @@
 import { CanActivate } from '@nestjs/common';
 
-export const rolesGuardMock: CanActivate = {
+export const permissionGuardMock: CanActivate = {
   canActivate: jest.fn(() => true),
 };

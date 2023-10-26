@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Query,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -22,6 +23,8 @@ import { QueryCompanyDTO } from './dto/query-company.dto';
 import { CreateCompanyDoc } from '../../docs/companies/company-create.doc';
 import { CompanyEntityDoc } from '../../docs/companies/company-entity.doc';
 import { CompanyUpdateDoc } from '../../docs/companies/company-update.doc';
+import { Auth } from '../../decorators/auth.decorator';
+import { RoleEnum } from '../../enums/role.enum';
 
 @ApiTags('companies')
 @ApiBearerAuth('JWT-auth')
@@ -30,6 +33,7 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Create a new company' })
   @ApiBody({ type: CreateCompanyDoc })
   @ApiResponse({
@@ -43,6 +47,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @Auth()
   @ApiOperation({ summary: 'List all registered companies' })
   @ApiResponse({
     status: 200,
@@ -56,6 +61,7 @@ export class CompaniesController {
   }
 
   @Get(':id')
+  @Auth()
   @ApiOperation({ summary: 'Search for a company by ID' })
   @ApiResponse({
     status: 200,
@@ -68,6 +74,7 @@ export class CompaniesController {
   }
 
   @Patch(':id')
+  @Auth([RoleEnum.admin])
   @ApiOperation({ summary: 'Update a company by ID' })
   @ApiBody({ type: CreateCompanyDoc })
   @ApiResponse({
@@ -79,5 +86,15 @@ export class CompaniesController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
     return this.companiesService.update(id, updateCompanyDto);
+  }
+
+  @Delete(':id')
+  @Auth([RoleEnum.admin])
+  @ApiOperation({ summary: 'Deletes a company by an ID' })
+  @ApiResponse({ status: 200, description: 'Successfully deleted company' })
+  @ApiResponse({ status: 404, description: 'Company not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  remove(@Param('id') id: string) {
+    return this.companiesService.remove(id);
   }
 }

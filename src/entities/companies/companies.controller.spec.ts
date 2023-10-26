@@ -5,6 +5,10 @@ import { createCompanyrMock } from '../../testing/mocks/companies-mocks/create-c
 import { companyListMock } from '../../testing/mocks/companies-mocks/companies-list.mock';
 import { HttpException } from '@nestjs/common';
 import { updateCompanyrMock } from '../../testing/mocks/companies-mocks/update-company.mock';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { PermissionGuard } from '../../auth/guards/permission.guard';
+import { authGuardMock } from '../../testing/mocks/auth-mocks/auth-guard.mock';
+import { permissionGuardMock } from '../../testing/mocks/auth-mocks/roles-guard.mock';
 
 describe('CompaniesController', () => {
   let controller: CompaniesController;
@@ -13,7 +17,12 @@ describe('CompaniesController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CompaniesController],
       providers: [companyServiceyMock],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue(authGuardMock)
+      .overrideGuard(PermissionGuard)
+      .useValue(permissionGuardMock)
+      .compile();
 
     controller = module.get<CompaniesController>(CompaniesController);
   });
@@ -70,6 +79,27 @@ describe('CompaniesController', () => {
           expect(error).toBeInstanceOf(HttpException);
         }
       });
+    });
+  });
+  describe('remove', () => {
+    it('Should successfully remove a company', async () => {
+      const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
+      const result = await controller.remove(idToRemove);
+
+      expect(result).toEqual({ success: true });
+      expect(companyServiceyMock.useValue.remove).toHaveBeenCalledWith(
+        idToRemove,
+      );
+    });
+
+    it('Should return an error if the company is not found', async () => {
+      const idToRemove = '1234abcd-a01b-1234-5678-1ab2c34d56e7';
+      companyServiceyMock.useValue.remove.mockRejectedValue(
+        new HttpException('Company not found', 404),
+      );
+      await expect(controller.remove(idToRemove)).rejects.toThrow(
+        new HttpException('Company not found', 404),
+      );
     });
   });
 

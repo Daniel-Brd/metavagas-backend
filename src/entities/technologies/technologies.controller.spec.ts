@@ -3,8 +3,8 @@ import { TechnologiesController } from './technologies.controller';
 import { technologiesServiceMock } from '../../testing/mocks/technologies-mocks/technologies-service.mock';
 import { AuthGuard } from '../../auth/guards/auth.guard';
 import { authGuardMock } from '../../testing/mocks/auth-mocks/auth-guard.mock';
-import { RolesGuard } from '../../auth/guards/roles.guard';
-import { rolesGuardMock } from '../../testing/mocks/auth-mocks/roles-guard.mock';
+import { PermissionGuard } from '../../auth/guards/permission.guard';
+import { permissionGuardMock } from '../../testing/mocks/auth-mocks/roles-guard.mock';
 import { createTechnologyMock } from '../../testing/mocks/technologies-mocks/create-technology.mock';
 import { technologyListMock } from '../../testing/mocks/technologies-mocks/technology-list.mock';
 import { HttpException } from '@nestjs/common';
@@ -20,8 +20,8 @@ describe('TechnologiesController', () => {
     })
       .overrideGuard(AuthGuard)
       .useValue(authGuardMock)
-      .overrideGuard(RolesGuard)
-      .useValue(rolesGuardMock)
+      .overrideGuard(PermissionGuard)
+      .useValue(permissionGuardMock)
       .compile();
 
     controller = module.get<TechnologiesController>(TechnologiesController);
