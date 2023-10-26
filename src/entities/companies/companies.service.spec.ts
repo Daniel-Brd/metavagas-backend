@@ -184,4 +184,43 @@ describe('CompaniesService', () => {
       );
     });
   });
+  describe('Company remove', () => {
+    describe('remove', () => {
+      const triggerErrorId = 'd98a2114-0000-4591-982c-bdbd38600000';
+
+      it('Must successfully remove and return company', async () => {
+        companyRepositoryMock.useValue.findOneBy.mockResolvedValue(
+          companyListMock[0],
+        );
+        companyRepositoryMock.useValue.delete.mockResolvedValue({
+          affected: 1,
+        });
+
+        const response = await service.remove(companyListMock[0].id);
+
+        expect(response.message).toBe('company sucessfully deleted');
+        expect(response.removed).toEqual(companyListMock[0]);
+      });
+
+      it('Should throw a 404 HttpException exception when the company is not found', async () => {
+        companyRepositoryMock.useValue.findOneBy.mockResolvedValueOnce(null);
+
+        await expect(service.remove(triggerErrorId)).rejects.toThrow(
+          new HttpException('Company not found.', 404),
+        );
+      });
+
+      it('Should throw a 500 HttpException on unexpected error during delete', async () => {
+        service.findById = jest.fn().mockResolvedValue(companyListMock[0]);
+
+        companyRepositoryMock.useValue.delete.mockRejectedValue(
+          new Error('Unexpected error'),
+        );
+
+        await expect(service.remove(companyListMock[0].id)).rejects.toThrow(
+          new HttpException('Unexpected error', 500),
+        );
+      });
+    });
+  });
 });

@@ -7,6 +7,7 @@ export const companyServiceyMock = {
     create: jest.fn().mockResolvedValue(companyListMock[0]),
     findAll: jest.fn().mockResolvedValue(companyListMock),
     findById: jest.fn().mockResolvedValue(companyListMock[0]),
+    remove: jest.fn().mockResolvedValue({ success: true }),
     update: jest.fn().mockImplementation((companyId, updatedValues) => ({
       ...companyListMock.find(company => company.id === companyId),
       ...updatedValues,

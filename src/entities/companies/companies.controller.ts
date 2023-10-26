@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Query,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -85,5 +86,15 @@ export class CompaniesController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
     return this.companiesService.update(id, updateCompanyDto);
+  }
+
+  @Delete(':id')
+  @Auth([RoleEnum.admin])
+  @ApiOperation({ summary: 'Deletes a company by an ID' })
+  @ApiResponse({ status: 200, description: 'Successfully deleted company' })
+  @ApiResponse({ status: 404, description: 'Company not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  remove(@Param('id') id: string) {
+    return this.companiesService.remove(id);
   }
 }
