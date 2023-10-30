@@ -168,7 +168,13 @@ $ npm build
 
 Este comando irá gerar uma pasta `dist` contendo o código compilado.
 
+
+
 # 🏢 Arquitetura:
+
+## 🗒️ Entities Diagram:
+
+![diagram](https://uploaddeimagens.com.br/images/004/651/034/original/Metavagas_diagram.png?1698632581)
 
 ## 📁 Estrutura das pastas:
 
