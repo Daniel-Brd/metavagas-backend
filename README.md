@@ -10,6 +10,8 @@ Aqui, você encontrará informações sobre como configurar e executar a API Met
 
 **Acesse a API MetaVagas para fazer requisições [aqui](https://metavagasapi.onrender.com/).**
 
+**Acesse a documentação [aqui](https://metavagasapi.onrender.com/v1/docs#/).**
+
 # 💻 Tecnologias utilizadas
 
 ![Node.js](https://img.shields.io/badge/Node.js-0D1117?style=for-the-badge&logo=node.js&labelColor=0D1117)
